@@ -23,7 +23,7 @@ export default function Home() {
 
         <header className="mb-16">
           <p className="text-muted leading-relaxed">
-            I&apos;m Patrice Dougé, a software engineer at <a href="https://wistia.com" className="text-muted underline decoration-[0.5px] decoration-muted-foreground underline-offset-2 hover:text-foreground transition-colors">Wistia</a>. Born in Pétion-Ville, Haiti, currently based in Sarasota, FL. I enjoy <a href="https://github.com/PatriceDouge" className="text-muted underline decoration-[0.5px] decoration-muted-foreground underline-offset-2 hover:text-foreground transition-colors">coding</a>, <a href="https://strava.app.link/eV9Oa35B3Zb" className="text-muted underline decoration-[0.5px] decoration-muted-foreground underline-offset-2 hover:text-foreground transition-colors">training</a>, and being a girl dad. These days I&apos;m learning as much as I can about coding agents, AI and how to build products users love.
+            I&apos;m Patrice Dougé, a software engineer at <a href="https://wistia.com" className="text-muted underline decoration-[0.5px] decoration-muted-foreground underline-offset-2 hover:text-foreground transition-colors">Wistia</a>. Born in Pétion-Ville, Haiti, currently based in Sarasota, FL. I enjoy <a href="https://github.com/PatriceDouge" className="text-muted underline decoration-[0.5px] decoration-muted-foreground underline-offset-2 hover:text-foreground transition-colors">coding</a>, <a href="https://strava.app.link/eV9Oa35B3Zb" className="text-muted underline decoration-[0.5px] decoration-muted-foreground underline-offset-2 hover:text-foreground transition-colors">training</a>, and being a girl dad of two. These days I&apos;m learning as much as I can about coding agents, AI and how to build products users love.
           </p>
         </header>
 
@@ -39,7 +39,7 @@ export default function Home() {
                   <time className="text-sm text-muted-foreground tabular-nums shrink-0">
                     {formatDate(post.date)}
                   </time>
-                  <span className="text-foreground group-hover:text-accent transition-colors">
+                  <span className="text-foreground/85 group-hover:text-foreground group-hover:underline underline-offset-2 transition-colors">
                     {post.title}
                   </span>
                 </Link>

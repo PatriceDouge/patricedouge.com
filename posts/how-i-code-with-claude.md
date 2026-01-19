@@ -1,6 +1,6 @@
 ---
 title: "How I Code with Claude"
-date: "2025-01-19"
+date: "2026-01-19"
 description: "My workflow for building software with AI assistance."
 ---
 
