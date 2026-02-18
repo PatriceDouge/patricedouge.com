@@ -74,11 +74,11 @@ export function LiftDetail({ dateStr, workoutLabel, compact }: LiftDetailProps) 
     const exerciseLogs = dayLogs[exercise.name] ?? [];
     return (
       <div key={exercise.name} className="space-y-1.5">
-        <div className="flex items-baseline justify-between gap-2">
+        <div className="flex items-baseline gap-2 flex-wrap">
           <span className="text-sm font-medium text-foreground">
             {exercise.name}
           </span>
-          <span className="text-xs text-muted-foreground shrink-0">
+          <span className="text-xs text-muted-foreground">
             {exercise.sets}×{exercise.reps}
             {exercise.rir ? ` · RIR ${exercise.rir}` : ""}
           </span>
