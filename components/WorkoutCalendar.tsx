@@ -380,7 +380,7 @@ export function WorkoutCalendar() {
                 className={`
                   w-full text-left p-3 rounded-lg border border-border transition-all
                   ${status ? `border-l-4 ${statusBorder(status)} ${statusBg(status)}` : ""}
-                  ${isSelected ? "ring-2 ring-accent" : ""}
+                  ${isSelected ? "ring-2 ring-accent ring-inset" : ""}
                 `}
               >
                 <div className="flex items-baseline gap-2 mb-1">
