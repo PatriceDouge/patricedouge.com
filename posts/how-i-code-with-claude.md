@@ -1,16 +1,16 @@
 ---
 title: "How I use claude code"
 date: "2026-01-19"
-description: "My workflow for building software with AI assistance."
+description: "My workflow for building software with AI."
 ---
 
-I started using claude code very soon after release, initially mostly for fixing tests, linter errors in the background, while using cursor mostly. Then slowly, like many, started using it more and more. Since about August 2025, it has been main driver for development at work and on side projects. Throughout the process, I've found a few workflows and patterns that consistently help me effectively work with claude. 
+My AI coding workflow has followed a similar (sequence) as most people. Things got intereseting once I really started using cursor. Initially hesitant with Agent mode, mostly using chat mode and stepping through each change manually/with tab. Then claude code came out. 
+
+Initially used mostly for fixing tests, linter errors in the background, while using cursor as my main driver. Then slowly, like many, started using it more and more. Since about August 2025, it has been main driver for development at work and on side projects. Throughout the process, I've found a few workflows and patterns that consistently help me effectively work with claude. 
 
 ## Planning is all you need
 
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+For larger features, refactors, or investigations, I always start in plan mode. 
 
 ## The Workflow
 
