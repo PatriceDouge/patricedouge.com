@@ -2089,6 +2089,18 @@ export function SiliconArticle() {
 
         <div className="space-y-5">
           <p className="text-muted leading-relaxed">
+            The <a href="https://taalas.com/the-path-to-ubiquitous-ai/" className="text-foreground hover:underline underline-offset-2 transition-colors" target="_blank" rel="noopener noreferrer">demo for this article</a> blew my mind. I was curious to learn more about how it all worked under the hood. I had Claude Code break down the architecture and the differences between traditional chip architectures and custom AI silicon, then visualize each piece. I had Claude refine each visual until it made sense to me.
+          </p>
+        </div>
+
+        <div className="my-10 flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="h-px flex-1 bg-border" />
+          <span>Everything below was written and visualized by Claude</span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        <div className="space-y-5">
+          <p className="text-muted leading-relaxed">
             AI inference is the most significant computational workload humanity has created. Every chat completion, every image generation, every code suggestion requires trillions of arithmetic operations.
           </p>
           <p className="text-muted leading-relaxed">
@@ -2233,8 +2245,12 @@ export function SiliconArticle() {
 
         <section className="mt-16">
           <h2 className="text-xl font-semibold mb-2">Silicon Vocabulary</h2>
-          <p className="text-muted leading-relaxed text-sm mb-6">
+          <p className="text-muted leading-relaxed text-sm mb-2">
             DRAM, CIM, HBM, ASIC—these acronyms get thrown around constantly in chip discussions, but they mean very specific things. Understanding the distinction helps the concepts above click into place.
+          </p>
+          <p className="text-muted-foreground text-xs mb-6">
+            Interactive format inspired by{" "}
+            <a href="https://how-terminals-work.vercel.app/" className="text-foreground hover:underline underline-offset-2 transition-colors" target="_blank" rel="noopener noreferrer">How Terminals Work</a>.
           </p>
           <Glossary />
         </section>
