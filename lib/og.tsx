@@ -5,7 +5,6 @@ import { join } from "node:path";
 interface OGImageOptions {
   title: string;
   description?: string;
-  siteName?: string;
 }
 
 let fontCache: { data: ArrayBuffer; name: string } | null = null;
@@ -39,7 +38,6 @@ async function loadFont(): Promise<{ data: ArrayBuffer; name: string }> {
 export async function generateOGImage({
   title,
   description,
-  siteName = "patricedouge.com",
 }: OGImageOptions): Promise<ImageResponse> {
   const font = await loadFont();
 
@@ -66,27 +64,22 @@ export async function generateOGImage({
           fontFamily: font.name,
         }}
       >
-        {/* Top: Logo + Name */}
-        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "36px",
-              height: "36px",
-              borderRadius: "8px",
-              backgroundColor: "#3b82f6",
-              color: "#ffffff",
-              fontSize: "16px",
-              fontWeight: 700,
-            }}
-          >
-            PD
-          </div>
-          <span style={{ color: "#a1a1aa", fontSize: "22px" }}>
-            Patrice Douge
-          </span>
+        {/* Top: Logo */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "36px",
+            height: "36px",
+            borderRadius: "8px",
+            backgroundColor: "#3b82f6",
+            color: "#ffffff",
+            fontSize: "16px",
+            fontWeight: 700,
+          }}
+        >
+          PD
         </div>
 
         {/* Center: Title + Description */}
@@ -114,20 +107,15 @@ export async function generateOGImage({
           )}
         </div>
 
-        {/* Bottom: Accent bar + Site URL */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div
-            style={{
-              width: "40px",
-              height: "4px",
-              backgroundColor: "#3b82f6",
-              borderRadius: "2px",
-            }}
-          />
-          <span style={{ color: "#71717a", fontSize: "18px" }}>
-            {siteName}
-          </span>
-        </div>
+        {/* Bottom: Accent bar */}
+        <div
+          style={{
+            width: "40px",
+            height: "4px",
+            backgroundColor: "#3b82f6",
+            borderRadius: "2px",
+          }}
+        />
       </div>
     ),
     {
