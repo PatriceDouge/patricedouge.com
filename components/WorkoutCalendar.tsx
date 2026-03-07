@@ -94,11 +94,12 @@ function addDays(date: Date, n: number): Date {
 // --- Component ---
 
 export function WorkoutCalendar() {
+  const today = new Date();
   const [view, setView] = useState<ViewMode>("month");
-  const [year, setYear] = useState(2026);
-  const [month, setMonth] = useState(1); // 0-indexed; 1 = February
-  const [weekStart, setWeekStart] = useState(() => getMondayOfWeek(new Date()));
-  const [dayDate, setDayDate] = useState(() => new Date());
+  const [year, setYear] = useState(today.getFullYear());
+  const [month, setMonth] = useState(today.getMonth()); // 0-indexed
+  const [weekStart, setWeekStart] = useState(() => getMondayOfWeek(today));
+  const [dayDate, setDayDate] = useState(() => today);
   const [selected, setSelected] = useState<string | null>(null);
   const [statuses, setStatuses] = useState<Record<string, CompletionStatus>>({});
   const [mounted, setMounted] = useState(false);
