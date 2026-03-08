@@ -29,6 +29,10 @@ export const trainingWeeks: TrainingWeek[] = [
 
 // [date, category, label, summary, description]
 const data: [string, WorkoutCategory, string, string, string][] = [
+  // Pre-plan (Mar 2–8)
+  ["2026-03-02", "run", "Intervals + Lift", "6.2mi · 4×1mi + Lift", "1 mi WU, 4×1 mi intervals, 1 mi CD. PM Lift: Pull-Ups · Bench · Shoulder superset."],
+  ["2026-03-03", "run", "Progressive", "6.2mi · 4mi progressive", "6.2 mi total with last 4 mi progressive."],
+  ["2026-03-07", "run", "Long Run", "10mi · last 3 @ 8:00/mi", "10 mi long run, last 3 mi at 8:00/mi."],
   // W1 (Mar 9–15)
   ["2026-03-09", "run", "LT1", "7mi total · 5×6:00 @ LT1", "1 mi WU,5×6:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 7 total."],
   ["2026-03-10", "run", "Easy + Lift A", "6mi easy + Lift A", "6 mi easy (8:55–9:45/mi). PM Lift A: Squat · Bench · Pull-Ups + shoulder superset."],
