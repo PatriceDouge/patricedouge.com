@@ -317,7 +317,7 @@ export function WorkoutCalendar() {
                 onDoubleClick={() => goToDay(dateStr)}
                 className={`
                   border-b border-r border-l border-border min-h-[68px] sm:min-h-[120px]
-                  p-1 sm:p-2 text-left transition-all relative
+                  p-1 sm:p-2 text-left transition-all relative flex flex-col items-start
                   hover:bg-muted-foreground/5 cursor-pointer
                   ${status ? `border-l-4 ${statusBorder(status)} ${statusBg(status)}` : ""}
                   ${isSelected ? "ring-2 ring-accent ring-inset" : ""}
