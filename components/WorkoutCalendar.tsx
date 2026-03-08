@@ -722,9 +722,9 @@ export function WorkoutCalendar() {
   return (
     <div className="space-y-4">
       {/* Controls bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="flex items-center gap-3">
         {/* View tabs */}
-        <div className="flex gap-1 rounded-lg bg-muted-foreground/10 p-1">
+        <div className="flex gap-1 rounded-lg bg-muted-foreground/10 p-1 shrink-0">
           {(["month", "week", "day"] as ViewMode[]).map((v) => (
             <button
               key={v}
@@ -740,8 +740,8 @@ export function WorkoutCalendar() {
           ))}
         </div>
 
-        {/* Navigation */}
-        <div className="flex items-center gap-2">
+        {/* Navigation — centered */}
+        <div className="flex-1 flex items-center justify-center gap-2">
           <button
             onClick={navPrev}
             className="p-1.5 rounded hover:bg-muted-foreground/10 transition-colors text-muted-foreground hover:text-foreground"
@@ -758,6 +758,20 @@ export function WorkoutCalendar() {
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Today — right edge */}
+        <button
+          onClick={() => {
+            const now = new Date();
+            setYear(now.getFullYear());
+            setMonth(now.getMonth());
+            setWeekStart(getMondayOfWeek(now));
+            setDayDate(now);
+          }}
+          className="shrink-0 px-2.5 py-1 text-xs rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10 transition-colors"
+        >
+          Today
+        </button>
       </div>
 
       {/* Calendar view */}
