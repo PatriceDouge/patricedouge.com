@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import {
   getWorkout,
@@ -133,6 +133,7 @@ function addDays(date: Date, n: number): Date {
 
 export function WorkoutCalendar() {
   const today = new Date();
+  const detailPanelRef = useRef<HTMLDivElement | null>(null);
   const [view, setView] = useState<ViewMode>("month");
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth()); // 0-indexed
@@ -159,6 +160,17 @@ export function WorkoutCalendar() {
       localStorage.setItem("workout-statuses", JSON.stringify(statuses));
     }
   }, [statuses, mounted]);
+
+  useEffect(() => {
+    if (!selected || view === "day") return;
+
+    requestAnimationFrame(() => {
+      detailPanelRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }, [selected, view]);
 
   function updateStatus(dateStr: string, status: CompletionStatus | null) {
     setStatuses((prev) => {
@@ -721,7 +733,9 @@ export function WorkoutCalendar() {
       {view === "day" && renderDayView()}
 
       {/* Detail panel for month/week selection */}
-      {view !== "day" && selected && renderDetailPanel()}
+      {view !== "day" && selected && (
+        <div ref={detailPanelRef}>{renderDetailPanel()}</div>
+      )}
     </div>
   );
 }
