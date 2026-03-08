@@ -30,7 +30,7 @@ export const trainingWeeks: TrainingWeek[] = [
 // [date, category, label, summary, description]
 const data: [string, WorkoutCategory, string, string, string][] = [
   // W1 (Mar 9–15)
-  ["2026-03-09", "run", "LT1", "7mi total · 5×6:00 @ LT1", "1 mi WU + drills/strides, 5×6:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 7 total."],
+  ["2026-03-09", "run", "LT1", "7mi total · 5×6:00 @ LT1", "1 mi WU,5×6:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 7 total."],
   ["2026-03-10", "run", "Easy + Lift A", "6mi easy + Lift A", "6 mi easy (8:55–9:45/mi). PM Lift A: Squat · Bench · Pull-Ups + shoulder superset."],
   ["2026-03-11", "run", "LT2", "7mi total · 4×1mi @ T", "1 mi WU, 4×1 mi @ T (7:20–7:35/mi) w/75s jog, 1 mi CD, easy to 7 total."],
   ["2026-03-12", "run", "Easy + Lift B", "5mi easy + Lift B", "5 mi easy. PM Lift B: RDL · OHP · One-Arm DB Row + curl/triceps superset."],
@@ -38,15 +38,15 @@ const data: [string, WorkoutCategory, string, string, string][] = [
   ["2026-03-14", "run", "Long Run", "10mi long easy", "10 mi long run at easy effort; keep first 8 mi relaxed, finish steady only if smooth."],
   ["2026-03-15", "run", "Recovery + Lift C", "3mi recovery + Lift C", "3 mi recovery (9:30–10:30+/mi). PM Lift C: Bulgarian Split Squat · Dips · Chin-Ups/Pulldown · Sandbag Pickup."],
   // W2 (Mar 16–22) — Half Marathon race Sat 3/21
-  ["2026-03-16", "run", "LT1", "6.5mi total · 4×6:00 @ LT1", "1 mi WU + drills, 4×6:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 6.5 total."],
+  ["2026-03-16", "run", "LT1", "6.5mi total · 4×6:00 @ LT1", "1 mi WU,4×6:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 6.5 total."],
   ["2026-03-17", "run", "Easy + Lift A", "5mi easy + Lift A", "5 mi easy (8:55–9:45/mi). PM Lift A: Squat · Bench · Pull-Ups + shoulder superset."],
   ["2026-03-18", "run", "LT2", "6.5mi total · 4mi @ HM", "1 mi WU, 4 mi continuous @ HM effort (7:15–7:25/mi), 1 mi CD, easy to 6.5 total."],
   ["2026-03-19", "run", "Easy + Lift B", "5mi easy + Lift B", "5 mi easy + 4×20s strides. PM Lift B: RDL · OHP · One-Arm DB Row + curl/triceps superset."],
   ["2026-03-20", "run", "Shakeout + Strides", "3.5mi easy + strides", "3.5 mi easy + 4×20s strides; keep legs fresh."],
-  ["2026-03-21", "race", "RACE: Half", "15mi total · WU + Half + CD", "1.5 mi WU + drills/strides, Half Marathon race, 0.4–1 mi CD."],
+  ["2026-03-21", "race", "RACE: Half", "15mi total · WU + Half + CD", "1.5 mi WU,Half Marathon race, 0.4–1 mi CD."],
   ["2026-03-22", "run", "Recovery + Lift C", "3mi recovery + Lift C", "3 mi very easy recovery (9:30–10:30+/mi). PM Lift C light/moderate or skip legs if needed."],
   // W3 (Mar 23–29)
-  ["2026-03-23", "run", "LT1", "8mi total · 4×8:00 @ LT1", "1 mi WU + drills, 4×8:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 8 total."],
+  ["2026-03-23", "run", "LT1", "8mi total · 4×8:00 @ LT1", "1 mi WU,4×8:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 8 total."],
   ["2026-03-24", "run", "Easy + Lift A", "6mi easy + Lift A", "6 mi easy. PM Lift A: Squat · Bench · Pull-Ups + shoulder superset."],
   ["2026-03-25", "run", "LT2", "8mi total · 5×1mi @ T", "1 mi WU, 5×1 mi @ T (7:20–7:35/mi) w/75s jog, 1 mi CD, easy to 8 total."],
   ["2026-03-26", "run", "Easy + Lift B", "5mi easy + Lift B", "5 mi easy. PM Lift B: RDL · OHP · One-Arm DB Row + curl/triceps superset."],
@@ -54,15 +54,15 @@ const data: [string, WorkoutCategory, string, string, string][] = [
   ["2026-03-28", "run", "Long Run", "11mi long easy", "11 mi long run easy; last 2 mi steady optional if you feel good."],
   ["2026-03-29", "run", "Recovery + Lift C", "3.5mi recovery + Lift C", "3.5 mi recovery (9:30–10:30+/mi). PM Lift C light/moderate."],
   // W4 (Mar 30–Apr 5)
-  ["2026-03-30", "run", "LT1", "8.5mi total · 3×10:00 @ LT1", "1 mi WU + drills, 3×10:00 @ LT1 (7:45–8:05/mi) w/2:00 jog, 1 mi CD, easy to 8.5 total."],
+  ["2026-03-30", "run", "LT1", "8.5mi total · 3×10:00 @ LT1", "1 mi WU,3×10:00 @ LT1 (7:45–8:05/mi) w/2:00 jog, 1 mi CD, easy to 8.5 total."],
   ["2026-03-31", "run", "Easy + Lift A", "6.5mi easy + Lift A", "6.5 mi easy. PM Lift A: Squat · Bench · Pull-Ups + shoulder superset."],
   ["2026-04-01", "run", "LT2", "9mi total · 2×2mi + 1×1mi @ HM/T", "1 mi WU, 2×2 mi + 1×1 mi @ HM/T (7:15–7:30/mi) w/2:30 jog, 1 mi CD, easy to 9 total."],
   ["2026-04-02", "run", "Easy + Lift B", "5.5mi easy + Lift B", "5.5 mi easy. PM Lift B: RDL · OHP · One-Arm DB Row + curl/triceps superset."],
   ["2026-04-03", "run", "Easy/Steady", "7mi easy, steady finish", "7 mi easy with last 15–20 min steady (8:05–8:40/mi)."],
-  ["2026-04-04", "run", "Long Run", "11mi long, last 3 steady", "11 mi long run: keep easy early, finish last 3 mi at steady effort."],
+  ["2026-04-04", "run", "Long Run", "11mi · 8 easy + 3 @ HM", "11 mi long run: 8 mi easy (8:30–9:00/mi), last 3 mi at HM pace (7:15–7:25/mi)."],
   ["2026-04-05", "run", "Recovery + Lift C", "3mi recovery + Lift C", "3 mi recovery (9:30–10:30+/mi). PM Lift C light/moderate."],
   // W5 (Apr 6–12) — 10-miler specific
-  ["2026-04-06", "run", "LT1", "9mi total · 4×8:00 @ LT1", "1 mi WU + drills, 4×8:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 9 total."],
+  ["2026-04-06", "run", "LT1", "9mi total · 4×8:00 @ LT1", "1 mi WU,4×8:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 9 total."],
   ["2026-04-07", "run", "Easy + Lift A", "6.5mi easy + Lift A", "6.5 mi easy. PM Lift A: Squat · Bench · Pull-Ups + shoulder superset."],
   ["2026-04-08", "run", "LT2", "9.5mi total · 3×2mi @ HM", "1 mi WU, 3×2 mi @ HM effort (7:15–7:25/mi) w/3:00 jog, 1 mi CD, easy to 9.5 total."],
   ["2026-04-09", "run", "Easy + Lift B", "5.5mi easy + Lift B", "5.5 mi easy + 4–6×20s strides. PM Lift B: RDL · OHP · One-Arm DB Row + curl/triceps superset."],
@@ -70,21 +70,21 @@ const data: [string, WorkoutCategory, string, string, string][] = [
   ["2026-04-11", "run", "Long Run", "11.5mi w/ 2×2mi @ 10M", "11.5 mi total: 6–7 mi easy, then 2×2 mi @ 10M goal pace (7:05–7:15/mi) w/3:00 easy, finish easy."],
   ["2026-04-12", "run", "Recovery + Lift C", "3mi recovery + Lift C", "3 mi recovery (9:30–10:30+/mi). PM Lift C light/moderate."],
   // W6 (Apr 13–19) — 10-Miler race Sat 4/18
-  ["2026-04-13", "run", "LT1", "8mi total · 3×8:00 @ LT1", "1 mi WU + drills, 3×8:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 8 total."],
+  ["2026-04-13", "run", "LT1", "8mi total · 3×8:00 @ LT1", "1 mi WU,3×8:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 8 total."],
   ["2026-04-14", "run", "Easy + Lift A", "5.5mi easy + Lift A", "5.5 mi easy. PM Lift A: Squat · Bench · Pull-Ups + shoulder superset."],
   ["2026-04-15", "run", "LT2", "7.5mi total · 5×4:00 @ T", "1 mi WU, 5×4:00 @ T (7:20–7:35/mi) w/90s jog, 1 mi CD, easy to 7.5 total."],
   ["2026-04-16", "run", "Easy + Lift B", "5mi easy + Lift B", "5 mi easy. PM Lift B: RDL · OHP · One-Arm DB Row + curl/triceps superset."],
   ["2026-04-17", "run", "Shakeout + Strides", "3.5mi easy + strides", "3.5 mi easy + 4×20s strides; stay relaxed for race day."],
-  ["2026-04-18", "race", "RACE: 10-Mi", "12mi total · WU + 10M + CD", "1.5 mi WU + drills/strides, 10-mile race (target 7:05–7:15/mi), 0.5 mi CD."],
+  ["2026-04-18", "race", "RACE: 10-Mi", "12mi total · WU + 10M + CD", "1.5 mi WU,10-mile race (target 7:05–7:15/mi), 0.5 mi CD."],
   ["2026-04-19", "run", "Recovery + Lift C", "3mi recovery + Lift C", "3 mi recovery (9:30–10:30+/mi). PM Lift C very light or upper-focused."],
   // W7 (Apr 20–26) — Half Marathon race Sun 4/26
-  ["2026-04-20", "run", "LT1", "7mi total · 3×8:00 @ LT1", "1 mi WU + drills, 3×8:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 7 total."],
+  ["2026-04-20", "run", "LT1", "7mi total · 3×8:00 @ LT1", "1 mi WU,3×8:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 7 total."],
   ["2026-04-21", "run", "Easy + Lift A", "5.5mi easy + Lift A", "5.5 mi easy. PM Lift A: Squat · Bench · Pull-Ups + shoulder superset."],
   ["2026-04-22", "run", "LT2", "8mi total · 3×2mi @ HM", "1 mi WU, 3×2 mi @ HM effort (7:15–7:25/mi) w/3:00 jog, 1 mi CD, easy to 8 total."],
   ["2026-04-23", "run", "Easy + Lift B", "5mi easy + Lift B", "5 mi easy + 4×20s strides. PM Lift B: RDL · OHP · One-Arm DB Row + curl/triceps superset."],
   ["2026-04-24", "run", "Easy Run", "5.5mi easy", "5.5 mi easy (8:55–9:45/mi)."],
   ["2026-04-25", "run", "Shakeout + Strides", "3mi easy + strides", "3 mi shakeout + 4×20s strides."],
-  ["2026-04-26", "race", "RACE: Half", "14.5–15mi total · WU + Half + CD", "1–1.5 mi WU + drills/strides, Half Marathon race (target ~7:15/mi), 0.4–0.8 mi CD."],
+  ["2026-04-26", "race", "RACE: Half", "14.5–15mi total · WU + Half + CD", "1–1.5 mi WU,Half Marathon race (target ~7:15/mi), 0.4–0.8 mi CD."],
 ];
 
 const workoutMap = new Map<string, Workout>();
