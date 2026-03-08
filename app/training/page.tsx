@@ -21,7 +21,15 @@ export default function TrainingPage() {
           </Link>
           <ThemeToggle />
         </div>
-        <h1 className="text-2xl font-bold tracking-tight mb-8">Training</h1>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
+          <h1 className="text-2xl font-bold tracking-tight">Training</h1>
+          <Link
+            href="/training/philosophies"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors underline-offset-2 hover:underline"
+          >
+            View Training Philosophies
+          </Link>
+        </div>
         <WorkoutCalendar />
       </div>
     </main>
