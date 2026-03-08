@@ -7,6 +7,54 @@ import { useRef } from "react";
 
 const philosophies = [
   {
+    slug: "lydiard",
+    name: "Arthur Lydiard",
+    tagline: "Aerobic base-first sequential periodization",
+    stat: "6",
+    statLabel: "Olympic medals",
+    color: "#8b5cf6",
+  },
+  {
+    slug: "daniels",
+    name: "Jack Daniels / VDOT",
+    tagline: "Physiological pace zones & purpose-driven training",
+    stat: "5",
+    statLabel: "pace zones",
+    color: "#06b6d4",
+  },
+  {
+    slug: "canova",
+    name: "Renato Canova",
+    tagline: "Extending race-pace volume via specific endurance",
+    stat: "50+",
+    statLabel: "world medals coached",
+    color: "#f97316",
+  },
+  {
+    slug: "pfitzinger",
+    name: "Pete Pfitzinger",
+    tagline: "High aerobic volume & medium-long runs",
+    stat: "22mi",
+    statLabel: "peak long run",
+    color: "#14b8a6",
+  },
+  {
+    slug: "tinman",
+    name: "Tinman Schwartz",
+    tagline: "Critical velocity & controlled quality",
+    stat: "CV",
+    statLabel: "pace fulcrum",
+    color: "#eab308",
+  },
+  {
+    slug: "hudson",
+    name: "Brad Hudson",
+    tagline: "Adaptive, effort-based targeted training",
+    stat: "0",
+    statLabel: "pace charts",
+    color: "#ec4899",
+  },
+  {
     slug: "norwegian",
     name: "Norwegian Singles",
     tagline: "Lactate-guided threshold training",
@@ -115,7 +163,7 @@ export default function TrainingPhilosophiesPage() {
             Running Training Philosophies
           </h1>
           <p className="text-muted-foreground leading-relaxed">
-            Four systems worth studying. Each card links to a deep-dive with
+            Ten systems worth studying. Each card links to a deep-dive with
             animated diagrams, key workouts, and research context.
           </p>
         </header>
@@ -144,6 +192,42 @@ export default function TrainingPhilosophiesPage() {
                 </tr>
               </thead>
               <tbody className="text-muted-foreground">
+                <tr className="border-b border-border">
+                  <td className="p-3 text-foreground">Lydiard</td>
+                  <td className="p-3">Massive aerobic engine</td>
+                  <td className="p-3">Patient athletes targeting a single peak</td>
+                  <td className="p-3">Volume too high too soon</td>
+                </tr>
+                <tr className="border-b border-border">
+                  <td className="p-3 text-foreground">Daniels / VDOT</td>
+                  <td className="p-3">Precise, purpose-driven pacing</td>
+                  <td className="p-3">Data-driven runners with recent race results</td>
+                  <td className="p-3">Overly rigid pace targets on off days</td>
+                </tr>
+                <tr className="border-b border-border">
+                  <td className="p-3 text-foreground">Canova</td>
+                  <td className="p-3">Race-pace specificity from day one</td>
+                  <td className="p-3">Serious half/full marathon athletes</td>
+                  <td className="p-3">Special blocks too demanding without recovery</td>
+                </tr>
+                <tr className="border-b border-border">
+                  <td className="p-3 text-foreground">Pfitzinger</td>
+                  <td className="p-3">Unmatched endurance development</td>
+                  <td className="p-3">Experienced marathoners wanting structure</td>
+                  <td className="p-3">Rapid mileage ramp-up causing injury</td>
+                </tr>
+                <tr className="border-b border-border">
+                  <td className="p-3 text-foreground">Tinman</td>
+                  <td className="p-3">Sustainable aerobic power gains</td>
+                  <td className="p-3">5K-10K runners, injury-prone athletes</td>
+                  <td className="p-3">Insufficient race-specific speed</td>
+                </tr>
+                <tr className="border-b border-border">
+                  <td className="p-3 text-foreground">Hudson</td>
+                  <td className="p-3">Individualized, adaptive training</td>
+                  <td className="p-3">Self-aware runners who think about training</td>
+                  <td className="p-3">Too vague for beginners without coaching instinct</td>
+                </tr>
                 <tr className="border-b border-border">
                   <td className="p-3 text-foreground">Norwegian Singles</td>
                   <td className="p-3">Sustainable LT development</td>
@@ -179,16 +263,28 @@ export default function TrainingPhilosophiesPage() {
           </h2>
           <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
             <li>
-              Keep your base structure from Norwegian Singles (Mon/Wed LT, Sat
-              long, Sun recovery).
+              Build your aerobic foundation first (Lydiard), then layer in
+              purpose-driven quality work (Daniels).
             </li>
             <li>
-              Borrow Mantz/Eyestone long-run progressions every 1-2 weeks to
-              improve finish strength.
+              Use Norwegian Singles structure for weekly rhythm (Mon/Wed
+              threshold, Sat long, Sun recovery).
             </li>
             <li>
-              Borrow Hansons cumulative-fatigue logic by protecting weekday
-              consistency.
+              Borrow Canova&rsquo;s specificity as the race nears: extend how
+              long you can hold goal pace.
+            </li>
+            <li>
+              Add Pfitzinger&rsquo;s medium-long run mid-week for a second
+              endurance stimulus.
+            </li>
+            <li>
+              Incorporate Tinman CV work as a sustainable quality session that
+              won&rsquo;t fry you.
+            </li>
+            <li>
+              Apply Hudson&rsquo;s adaptive mindset: plan in pencil, adjust
+              daily based on readiness.
             </li>
             <li>
               Use polarized thinking as guardrails: most non-key days should feel
