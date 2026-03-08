@@ -6,6 +6,7 @@ import {
   getWorkout,
   getTrainingWeek,
   formatDateKey,
+  type Workout,
   type WorkoutCategory,
   type CompletionStatus,
 } from "@/lib/workouts";
@@ -102,6 +103,33 @@ function formatWorkoutDescription(description: string): string {
 
   const liftBlock = `${liftHeader}\n${liftItems.join("\n")}`;
   return runPart ? `${runPart}\n\n${liftBlock}` : liftBlock;
+}
+
+function compactMonthLabel(label: string): string {
+  if (/^LT[12]$/.test(label)) return label;
+  if (label.startsWith("Easy + Lift ")) return `E+L ${label.slice(-1)}`;
+  if (label === "Easy Run") return "Easy";
+  if (label === "Easy/Steady") return "E/Steady";
+  if (label === "Long Run") return "LR";
+  if (label === "Recovery + Lift C") return "REC+L C";
+  if (label === "Shakeout + Strides") return "Shk+Str";
+  if (label === "RACE: Half") return "RACE HM";
+  if (label === "RACE: 10-Mi") return "RACE 10M";
+  if (label.startsWith("RACE:")) return `RACE ${label.slice(5).trim()}`;
+  return label;
+}
+
+function compactMonthDetail(workout: Workout): string {
+  const [milesPartRaw, detailPartRaw] = workout.summary.split("·");
+  const miles = (milesPartRaw ?? "").trim();
+  const detailPart = (detailPartRaw ?? "").trim();
+  const liftMatch = workout.label.match(/Lift ([ABC])/);
+  const isLtDay = workout.label === "LT1" || workout.label === "LT2";
+
+  if (isLtDay && detailPart) return `${miles} · ${detailPart}`;
+  if (liftMatch) return `${miles} · Lift ${liftMatch[1]}`;
+  if (workout.category === "race") return `${miles} · Race`;
+  return miles;
 }
 
 // --- Date helpers ---
@@ -278,6 +306,7 @@ export function WorkoutCalendar() {
             const status = statuses[dateStr];
             const isToday = dateStr === todayStr;
             const isSelected = dateStr === selected;
+            const mobileDetail = workout ? compactMonthDetail(workout) : "";
 
             return (
               <button
@@ -320,9 +349,13 @@ export function WorkoutCalendar() {
                           : categoryColor(workout.category)
                       }`}
                     >
-                      {workout.label}
+                      <span className="sm:hidden">{compactMonthLabel(workout.label)}</span>
+                      <span className="hidden sm:inline">{workout.label}</span>
                     </span>
-                    <p className="text-[10px] sm:text-[11px] leading-snug text-muted-foreground line-clamp-3">
+                    <p className="sm:hidden text-[10px] leading-snug text-muted-foreground line-clamp-2">
+                      {mobileDetail}
+                    </p>
+                    <p className="hidden sm:block text-[10px] sm:text-[11px] leading-snug text-muted-foreground line-clamp-3">
                       {workout.description}
                     </p>
                   </div>
