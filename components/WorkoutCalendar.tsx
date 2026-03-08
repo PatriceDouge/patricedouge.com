@@ -66,6 +66,44 @@ function statusBtnClass(s: CompletionStatus, active: boolean) {
   return map[s][active ? 0 : 1];
 }
 
+function formatWorkoutDescription(description: string): string {
+  const formatRunBlock = (text: string) =>
+    text
+      .trim()
+      .replace(/\.\s*$/, "")
+      .split(/\s*,\s*/)
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .join("\n");
+
+  const trimmed = description.trim().replace(/\s+/g, " ");
+  const pmIndex = trimmed.indexOf("PM Lift");
+
+  if (pmIndex === -1) return formatRunBlock(trimmed);
+
+  const runPart = formatRunBlock(trimmed.slice(0, pmIndex));
+  const liftPart = trimmed.slice(pmIndex).replace(/\.\s*$/, "").trim();
+  const colonIndex = liftPart.indexOf(":");
+
+  if (colonIndex === -1) {
+    return runPart ? `${runPart}\n\n${liftPart}` : liftPart;
+  }
+
+  const liftHeader = liftPart.slice(0, colonIndex + 1).trim();
+  const liftItemsRaw = liftPart.slice(colonIndex + 1).trim();
+  const liftItems = liftItemsRaw
+    .split(/\s*[·+]\s*/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  if (liftItems.length === 0) {
+    return runPart ? `${runPart}\n\n${liftHeader}` : liftHeader;
+  }
+
+  const liftBlock = `${liftHeader}\n${liftItems.join("\n")}`;
+  return runPart ? `${runPart}\n\n${liftBlock}` : liftBlock;
+}
+
 // --- Date helpers ---
 
 function getDaysInMonth(y: number, m: number) {
@@ -319,11 +357,14 @@ export function WorkoutCalendar() {
 
         {/* Desktop: 7-column grid */}
         <div className="hidden sm:grid grid-cols-7 border-t border-border">
-          {days.map((d, i) => {
+          {days.map((d) => {
             const dateStr = formatDateKey(d);
             const workout = getWorkout(dateStr);
             const status = statuses[dateStr];
             const isSelected = dateStr === selected;
+            const formattedDescription = workout
+              ? formatWorkoutDescription(workout.description)
+              : "";
 
             return (
               <button
@@ -333,15 +374,15 @@ export function WorkoutCalendar() {
                 }
                 onDoubleClick={() => goToDay(dateStr)}
                 className={`
-                  border-b border-r border-border min-h-[120px]
-                  p-2 text-left transition-all
+                  border-b border-r border-border min-h-[220px] lg:min-h-[260px]
+                  p-3 text-left transition-all
                   hover:bg-muted-foreground/5 cursor-pointer border-l
                   ${status ? `border-l-4 ${statusBorder(status)} ${statusBg(status)}` : ""}
                   ${isSelected ? "ring-2 ring-accent ring-inset" : ""}
                 `}
               >
                 {workout ? (
-                  <div className="space-y-1">
+                  <div className="h-full flex flex-col space-y-2">
                     <span
                       className={`text-xs font-medium ${
                         workout.category === "race"
@@ -351,8 +392,8 @@ export function WorkoutCalendar() {
                     >
                       {workout.label}
                     </span>
-                    <p className="text-[11px] text-muted-foreground leading-snug line-clamp-3">
-                      {workout.description}
+                    <p className="text-[12px] text-muted-foreground leading-5 whitespace-pre-line">
+                      {formattedDescription}
                     </p>
                   </div>
                 ) : (
@@ -371,6 +412,9 @@ export function WorkoutCalendar() {
             const status = statuses[dateStr];
             const isToday = dateStr === todayStr;
             const isSelected = dateStr === selected;
+            const formattedDescription = workout
+              ? formatWorkoutDescription(workout.description)
+              : "";
 
             return (
               <button
@@ -405,8 +449,8 @@ export function WorkoutCalendar() {
                   )}
                 </div>
                 {workout && (
-                  <p className="text-xs text-muted-foreground ml-10">
-                    {workout.description}
+                  <p className="text-xs text-muted-foreground ml-10 whitespace-pre-line">
+                    {formattedDescription}
                   </p>
                 )}
               </button>
@@ -425,6 +469,9 @@ export function WorkoutCalendar() {
     const week = getTrainingWeek(dateStr);
     const status = statuses[dateStr];
     const isToday = dateStr === todayStr;
+    const formattedDescription = workout
+      ? formatWorkoutDescription(workout.description)
+      : "";
 
     return (
       <div className="max-w-lg">
@@ -481,8 +528,8 @@ export function WorkoutCalendar() {
               </div>
               <h3 className="text-lg font-semibold mb-1">{workout.label}</h3>
               {workout.category !== "lift" && (
-                <p className="text-muted leading-relaxed">
-                  {workout.description}
+                <p className="text-muted leading-relaxed whitespace-pre-line">
+                  {formattedDescription}
                 </p>
               )}
               {workout.category === "lift" && (
@@ -542,6 +589,9 @@ export function WorkoutCalendar() {
       month: "long",
       day: "numeric",
     });
+    const formattedDescription = workout
+      ? formatWorkoutDescription(workout.description)
+      : "";
 
     return (
       <div
@@ -585,7 +635,9 @@ export function WorkoutCalendar() {
                 <span className="text-sm font-medium">{workout.label}</span>
               </div>
               {workout.category !== "lift" && (
-                <p className="text-sm text-muted">{workout.description}</p>
+                <p className="text-sm text-muted whitespace-pre-line leading-relaxed">
+                  {formattedDescription}
+                </p>
               )}
               {workout.category === "lift" && (
                 <LiftDetail
