@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PhilosophyWeeks } from "@/components/PhilosophyWeeks";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -256,6 +257,10 @@ export default function TrainingPhilosophiesPage() {
             </table>
           </div>
         </motion.section>
+
+        <div className="mt-16">
+          <PhilosophyWeeks />
+        </div>
 
         <section className="mt-12 mb-8">
           <h2 className="text-xl font-semibold mb-3">
