@@ -175,19 +175,11 @@ export function WorkoutCalendar() {
   useEffect(() => {
     setMounted(true);
     setTodayStr(formatDateKey(new Date()));
-    try {
-      const saved = localStorage.getItem("workout-statuses");
-      if (saved) setStatuses(JSON.parse(saved));
-    } catch {
-      /* ignore */
-    }
+    fetch("/api/workout-statuses")
+      .then((r) => r.json())
+      .then((data) => setStatuses(data))
+      .catch(() => {});
   }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem("workout-statuses", JSON.stringify(statuses));
-    }
-  }, [statuses, mounted]);
 
   useEffect(() => {
     if (!selected || view === "day") return;
@@ -209,6 +201,11 @@ export function WorkoutCalendar() {
       }
       return { ...prev, [dateStr]: status };
     });
+    fetch("/api/workout-statuses", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date: dateStr, status }),
+    }).catch(() => {});
   }
 
   // --- Navigation ---

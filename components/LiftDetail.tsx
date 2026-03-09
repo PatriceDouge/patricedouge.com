@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   getLiftTemplate,
   type LiftTemplate,
@@ -8,41 +8,46 @@ import {
   type Exercise,
 } from "@/lib/workouts";
 
-const STORAGE_KEY = "workout-lift-logs";
-
 interface LiftDetailProps {
   dateStr: string;
   workoutLabel: string;
   compact?: boolean;
 }
 
-function loadLogs(): Record<string, Record<string, SetLog[]>> {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
-
-function saveLogs(logs: Record<string, Record<string, SetLog[]>>) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
-}
-
 export function LiftDetail({ dateStr, workoutLabel, compact }: LiftDetailProps) {
-  const [logs, setLogs] = useState<Record<string, Record<string, SetLog[]>>>({});
+  const [logs, setLogs] = useState<Record<string, SetLog[]>>({});
   const [mounted, setMounted] = useState(false);
+  const debounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   const template = getLiftTemplate(workoutLabel);
 
   useEffect(() => {
     setMounted(true);
-    setLogs(loadLogs());
-  }, []);
+    fetch(`/api/lift-logs?date=${dateStr}`)
+      .then((r) => r.json())
+      .then((data) => setLogs(data))
+      .catch(() => {});
+  }, [dateStr]);
+
+  const debouncedSave = useCallback(
+    (exerciseName: string, setIndex: number, field: "weight" | "reps", value: string) => {
+      const key = `${exerciseName}-${setIndex}-${field}`;
+      if (debounceTimers.current[key]) {
+        clearTimeout(debounceTimers.current[key]);
+      }
+      debounceTimers.current[key] = setTimeout(() => {
+        fetch("/api/lift-logs", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ date: dateStr, exercise: exerciseName, setIndex, field, value }),
+        }).catch(() => {});
+        delete debounceTimers.current[key];
+      }, 500);
+    },
+    [dateStr],
+  );
 
   if (!template) return null;
-
-  const dayLogs = logs[dateStr] ?? {};
 
   function updateSet(
     exerciseName: string,
@@ -52,26 +57,21 @@ export function LiftDetail({ dateStr, workoutLabel, compact }: LiftDetailProps) 
   ) {
     setLogs((prev) => {
       const next = { ...prev };
-      const dayData = { ...(next[dateStr] ?? {}) };
-      const sets = [...(dayData[exerciseName] ?? [])];
-
-      // Ensure array is long enough
+      const sets = [...(next[exerciseName] ?? [])];
       while (sets.length <= setIndex) {
         sets.push({ weight: "", reps: "" });
       }
       sets[setIndex] = { ...sets[setIndex], [field]: value };
-      dayData[exerciseName] = sets;
-      next[dateStr] = dayData;
-
-      saveLogs(next);
+      next[exerciseName] = sets;
       return next;
     });
+    debouncedSave(exerciseName, setIndex, field, value);
   }
 
   if (!mounted) return null;
 
   function renderExerciseInputs(exercise: Exercise) {
-    const exerciseLogs = dayLogs[exercise.name] ?? [];
+    const exerciseLogs = logs[exercise.name] ?? [];
     return (
       <div key={exercise.name} className="space-y-1.5">
         <div className="flex items-baseline gap-2 flex-wrap">
