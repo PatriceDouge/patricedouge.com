@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import {
   getWorkout,
@@ -174,6 +174,12 @@ export function WorkoutCalendar() {
   const [mounted, setMounted] = useState(false);
   const [todayStr, setTodayStr] = useState("");
   const notesTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState(false);
+  const clickCount = useRef(0);
+  const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -191,7 +197,50 @@ export function WorkoutCalendar() {
         setNotes(n);
       })
       .catch(() => {});
+    fetch("/api/auth")
+      .then((r) => r.json())
+      .then((data: { admin: boolean }) => setIsAdmin(data.admin))
+      .catch(() => {});
   }, []);
+
+  function handleTodayClick() {
+    const now = new Date();
+    setYear(now.getFullYear());
+    setMonth(now.getMonth());
+    setWeekStart(getMondayOfWeek(now));
+    setDayDate(now);
+
+    clickCount.current += 1;
+    if (clickTimer.current) clearTimeout(clickTimer.current);
+    clickTimer.current = setTimeout(() => {
+      clickCount.current = 0;
+    }, 500);
+    if (clickCount.current >= 3) {
+      clickCount.current = 0;
+      if (!isAdmin) {
+        setShowLogin(true);
+        setLoginError(false);
+        setLoginPassword("");
+      }
+    }
+  }
+
+  async function handleLogin(e: FormEvent) {
+    e.preventDefault();
+    const res = await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: loginPassword }),
+    });
+    if (res.ok) {
+      setIsAdmin(true);
+      setShowLogin(false);
+      setLoginPassword("");
+      setLoginError(false);
+    } else {
+      setLoginError(true);
+    }
+  }
 
   useEffect(() => {
     if (!selected || view === "day") return;
@@ -611,49 +660,53 @@ export function WorkoutCalendar() {
                 </p>
               )}
               {workout.category === "lift" && (
-                <LiftDetail dateStr={dateStr} workoutLabel={workout.label} />
+                <LiftDetail dateStr={dateStr} workoutLabel={workout.label} isAdmin={isAdmin} />
               )}
             </div>
 
             {/* Status controls */}
-            <div>
-              <p className="text-xs text-muted-foreground mb-3 font-medium uppercase tracking-wide">
-                Status
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {(["completed", "partial", "missed"] as CompletionStatus[]).map(
-                  (s) => (
-                    <button
-                      key={s}
-                      onClick={() =>
-                        updateStatus(dateStr, status === s ? null : s)
-                      }
-                      className={`px-4 py-2 text-sm rounded-lg border transition-colors capitalize ${statusBtnClass(s, status === s)}`}
-                    >
-                      {s === "completed"
-                        ? "Completed"
-                        : s === "partial"
-                          ? "Partial"
-                          : "Missed"}
-                    </button>
-                  ),
-                )}
+            {isAdmin && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-3 font-medium uppercase tracking-wide">
+                  Status
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {(["completed", "partial", "missed"] as CompletionStatus[]).map(
+                    (s) => (
+                      <button
+                        key={s}
+                        onClick={() =>
+                          updateStatus(dateStr, status === s ? null : s)
+                        }
+                        className={`px-4 py-2 text-sm rounded-lg border transition-colors capitalize ${statusBtnClass(s, status === s)}`}
+                      >
+                        {s === "completed"
+                          ? "Completed"
+                          : s === "partial"
+                            ? "Partial"
+                            : "Missed"}
+                      </button>
+                    ),
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Notes */}
-            <div>
-              <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">
-                Notes
-              </p>
-              <textarea
-                value={notes[dateStr] ?? ""}
-                onChange={(e) => handleNotesChange(dateStr, e.target.value)}
-                placeholder="Add notes..."
-                rows={3}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
-              />
-            </div>
+            {isAdmin && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">
+                  Notes
+                </p>
+                <textarea
+                  value={notes[dateStr] ?? ""}
+                  onChange={(e) => handleNotesChange(dateStr, e.target.value)}
+                  placeholder="Add notes..."
+                  rows={3}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+                />
+              </div>
+            )}
           </div>
         ) : (
           <div className="rounded-lg border border-border p-6 text-center">
@@ -736,40 +789,45 @@ export function WorkoutCalendar() {
                   dateStr={selected}
                   workoutLabel={workout.label}
                   compact
+                  isAdmin={isAdmin}
                 />
               )}
             </div>
 
             {/* Inline status controls */}
-            <div className="flex flex-wrap gap-2">
-              {(["completed", "partial", "missed"] as CompletionStatus[]).map(
-                (s) => (
-                  <button
-                    key={s}
-                    onClick={() =>
-                      updateStatus(selected, status === s ? null : s)
-                    }
-                    className={`px-3 py-1.5 text-xs rounded-lg border transition-colors capitalize ${statusBtnClass(s, status === s)}`}
-                  >
-                    {s}
-                  </button>
-                ),
-              )}
-            </div>
+            {isAdmin && (
+              <div className="flex flex-wrap gap-2">
+                {(["completed", "partial", "missed"] as CompletionStatus[]).map(
+                  (s) => (
+                    <button
+                      key={s}
+                      onClick={() =>
+                        updateStatus(selected, status === s ? null : s)
+                      }
+                      className={`px-3 py-1.5 text-xs rounded-lg border transition-colors capitalize ${statusBtnClass(s, status === s)}`}
+                    >
+                      {s}
+                    </button>
+                  ),
+                )}
+              </div>
+            )}
 
             {/* Notes */}
-            <div>
-              <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">
-                Notes
-              </p>
-              <textarea
-                value={notes[selected] ?? ""}
-                onChange={(e) => handleNotesChange(selected, e.target.value)}
-                placeholder="Add notes..."
-                rows={2}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
-              />
-            </div>
+            {isAdmin && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">
+                  Notes
+                </p>
+                <textarea
+                  value={notes[selected] ?? ""}
+                  onChange={(e) => handleNotesChange(selected, e.target.value)}
+                  placeholder="Add notes..."
+                  rows={2}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+                />
+              </div>
+            )}
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">Rest day</p>
@@ -822,14 +880,8 @@ export function WorkoutCalendar() {
 
         {/* Today — right edge */}
         <button
-          onClick={() => {
-            const now = new Date();
-            setYear(now.getFullYear());
-            setMonth(now.getMonth());
-            setWeekStart(getMondayOfWeek(now));
-            setDayDate(now);
-          }}
-          className="shrink-0 px-2.5 py-1 text-xs rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10 transition-colors"
+          onClick={handleTodayClick}
+          className="shrink-0 px-2.5 py-1 text-xs rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10 transition-colors select-none"
         >
           Today
         </button>
@@ -843,6 +895,53 @@ export function WorkoutCalendar() {
       {/* Detail panel for month/week selection */}
       {view !== "day" && selected && (
         <div ref={detailPanelRef}>{renderDetailPanel()}</div>
+      )}
+
+      {/* Login modal */}
+      {showLogin && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowLogin(false)}
+        >
+          <form
+            onSubmit={handleLogin}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-background border border-border rounded-lg p-6 w-full max-w-xs space-y-4 shadow-lg"
+          >
+            <h3 className="text-sm font-medium">Admin Login</h3>
+            <input
+              type="password"
+              value={loginPassword}
+              onChange={(e) => {
+                setLoginPassword(e.target.value);
+                setLoginError(false);
+              }}
+              placeholder="Password"
+              autoFocus
+              className={`w-full rounded-lg border px-3 py-2 text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-accent ${
+                loginError ? "border-red-500" : "border-border"
+              }`}
+            />
+            {loginError && (
+              <p className="text-xs text-red-500">Wrong password</p>
+            )}
+            <div className="flex gap-2 justify-end">
+              <button
+                type="button"
+                onClick={() => setShowLogin(false)}
+                className="px-3 py-1.5 text-xs rounded-md border border-border text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-3 py-1.5 text-xs rounded-md bg-accent text-white hover:bg-accent/90 transition-colors"
+              >
+                Login
+              </button>
+            </div>
+          </form>
+        </div>
       )}
     </div>
   );

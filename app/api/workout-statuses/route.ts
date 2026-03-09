@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { ensureSchema } from "@/lib/db-schema";
+import { isAdmin } from "@/lib/auth";
 import type { CompletionStatus } from "@/lib/workouts";
 
 export type WorkoutStatusRow = {
@@ -32,6 +33,9 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  if (!(await isAdmin())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   await ensureSchema();
   const { date, status, category, label, summary, description } =
     (await request.json()) as {
@@ -83,6 +87,9 @@ export async function PUT(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  if (!(await isAdmin())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   await ensureSchema();
   const { date, notes } = (await request.json()) as {
     date: string;

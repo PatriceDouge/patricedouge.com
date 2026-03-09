@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { ensureSchema } from "@/lib/db-schema";
+import { isAdmin } from "@/lib/auth";
 import type { SetLog } from "@/lib/workouts";
 
 export async function GET(request: Request) {
@@ -36,6 +37,9 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  if (!(await isAdmin())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   await ensureSchema();
   const { date, exercise, setIndex, field, value } = (await request.json()) as {
     date: string;

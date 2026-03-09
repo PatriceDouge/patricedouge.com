@@ -12,9 +12,10 @@ interface LiftDetailProps {
   dateStr: string;
   workoutLabel: string;
   compact?: boolean;
+  isAdmin?: boolean;
 }
 
-export function LiftDetail({ dateStr, workoutLabel, compact }: LiftDetailProps) {
+export function LiftDetail({ dateStr, workoutLabel, compact, isAdmin }: LiftDetailProps) {
   const [logs, setLogs] = useState<Record<string, SetLog[]>>({});
   const [mounted, setMounted] = useState(false);
   const debounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
@@ -72,6 +73,23 @@ export function LiftDetail({ dateStr, workoutLabel, compact }: LiftDetailProps) 
 
   function renderExerciseInputs(exercise: Exercise) {
     const exerciseLogs = logs[exercise.name] ?? [];
+
+    if (!isAdmin) {
+      return (
+        <div key={exercise.name} className="space-y-0.5">
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span className="text-sm font-medium text-foreground">
+              {exercise.name}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {exercise.sets}×{exercise.reps}
+              {exercise.rir ? ` · RIR ${exercise.rir}` : ""}
+            </span>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div key={exercise.name} className="space-y-1.5">
         <div className="flex items-baseline gap-2 flex-wrap">
