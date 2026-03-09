@@ -841,33 +841,41 @@ export function WorkoutCalendar() {
   return (
     <div className="space-y-4">
       {/* Controls bar */}
-      <div className="flex items-center gap-3">
-        {/* View tabs */}
-        <div className="flex gap-1 rounded-lg bg-muted-foreground/10 p-1 shrink-0">
-          {(["month", "week", "day"] as ViewMode[]).map((v) => (
-            <button
-              key={v}
-              onClick={() => setView(v)}
-              className={`px-3 py-1 text-sm rounded-md capitalize transition-colors ${
-                view === v
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {v}
-            </button>
-          ))}
+      <div className="space-y-2 sm:space-y-0">
+        {/* Mobile: two rows */}
+        <div className="flex items-center justify-between sm:hidden">
+          {/* View tabs */}
+          <div className="flex gap-1 rounded-lg bg-muted-foreground/10 p-1">
+            {(["month", "week", "day"] as ViewMode[]).map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className={`px-3 py-1 text-sm rounded-md capitalize transition-colors ${
+                  view === v
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+          {/* Today */}
+          <button
+            onClick={handleTodayClick}
+            className="px-2.5 py-1 text-xs rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10 transition-colors select-none"
+          >
+            Today
+          </button>
         </div>
-
-        {/* Navigation — centered */}
-        <div className="flex-1 flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-2 sm:hidden">
           <button
             onClick={navPrev}
             className="p-1.5 rounded hover:bg-muted-foreground/10 transition-colors text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="text-sm font-medium min-w-[220px] text-center">
+          <span className="text-sm font-medium text-center">
             {navLabel}
           </span>
           <button
@@ -878,13 +886,47 @@ export function WorkoutCalendar() {
           </button>
         </div>
 
-        {/* Today — right edge */}
-        <button
-          onClick={handleTodayClick}
-          className="shrink-0 px-2.5 py-1 text-xs rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10 transition-colors select-none"
-        >
-          Today
-        </button>
+        {/* Desktop: single row */}
+        <div className="hidden sm:flex items-center gap-3">
+          <div className="flex gap-1 rounded-lg bg-muted-foreground/10 p-1 shrink-0">
+            {(["month", "week", "day"] as ViewMode[]).map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className={`px-3 py-1 text-sm rounded-md capitalize transition-colors ${
+                  view === v
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+          <div className="flex-1 flex items-center justify-center gap-2">
+            <button
+              onClick={navPrev}
+              className="p-1.5 rounded hover:bg-muted-foreground/10 transition-colors text-muted-foreground hover:text-foreground"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <span className="text-sm font-medium min-w-[220px] text-center">
+              {navLabel}
+            </span>
+            <button
+              onClick={navNext}
+              className="p-1.5 rounded hover:bg-muted-foreground/10 transition-colors text-muted-foreground hover:text-foreground"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+          <button
+            onClick={handleTodayClick}
+            className="shrink-0 px-2.5 py-1 text-xs rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10 transition-colors select-none"
+          >
+            Today
+          </button>
+        </div>
       </div>
 
       {/* Calendar view */}
