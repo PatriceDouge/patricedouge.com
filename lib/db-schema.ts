@@ -4,8 +4,13 @@ export async function ensureSchema() {
   await db.batch([
     {
       sql: `CREATE TABLE IF NOT EXISTS workout_statuses (
-        date   TEXT PRIMARY KEY,
-        status TEXT NOT NULL
+        date        TEXT PRIMARY KEY,
+        status      TEXT NOT NULL,
+        category    TEXT DEFAULT '',
+        label       TEXT DEFAULT '',
+        summary     TEXT DEFAULT '',
+        description TEXT DEFAULT '',
+        notes       TEXT DEFAULT ''
       )`,
       args: [],
     },
@@ -21,4 +26,17 @@ export async function ensureSchema() {
       args: [],
     },
   ]);
+
+  // Migrations for existing DBs — SQLite errors on duplicate ADD COLUMN, so catch and ignore
+  const newColumns = ["category", "label", "summary", "description", "notes"];
+  for (const col of newColumns) {
+    try {
+      await db.execute({
+        sql: `ALTER TABLE workout_statuses ADD COLUMN ${col} TEXT DEFAULT ''`,
+        args: [],
+      });
+    } catch {
+      // column already exists — ignore
+    }
+  }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import {
   getWorkout,
@@ -11,6 +11,7 @@ import {
   type CompletionStatus,
 } from "@/lib/workouts";
 import { LiftDetail } from "@/components/LiftDetail";
+import type { WorkoutStatusRow } from "@/app/api/workout-statuses/route";
 
 type ViewMode = "month" | "week" | "day";
 
@@ -169,15 +170,26 @@ export function WorkoutCalendar() {
   const [dayDate, setDayDate] = useState(() => today);
   const [selected, setSelected] = useState<string | null>(null);
   const [statuses, setStatuses] = useState<Record<string, CompletionStatus>>({});
+  const [notes, setNotes] = useState<Record<string, string>>({});
   const [mounted, setMounted] = useState(false);
   const [todayStr, setTodayStr] = useState("");
+  const notesTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   useEffect(() => {
     setMounted(true);
     setTodayStr(formatDateKey(new Date()));
     fetch("/api/workout-statuses")
       .then((r) => r.json())
-      .then((data) => setStatuses(data))
+      .then((data: Record<string, WorkoutStatusRow>) => {
+        const s: Record<string, CompletionStatus> = {};
+        const n: Record<string, string> = {};
+        for (const [date, row] of Object.entries(data)) {
+          if (row.status) s[date] = row.status;
+          if (row.notes) n[date] = row.notes;
+        }
+        setStatuses(s);
+        setNotes(n);
+      })
       .catch(() => {});
   }, []);
 
@@ -201,11 +213,35 @@ export function WorkoutCalendar() {
       }
       return { ...prev, [dateStr]: status };
     });
+    const workout = getWorkout(dateStr);
     fetch("/api/workout-statuses", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date: dateStr, status }),
+      body: JSON.stringify({
+        date: dateStr,
+        status,
+        category: workout?.category ?? "",
+        label: workout?.label ?? "",
+        summary: workout?.summary ?? "",
+        description: workout?.description ?? "",
+      }),
     }).catch(() => {});
+  }
+
+  const saveNotes = useCallback((dateStr: string, value: string) => {
+    fetch("/api/workout-statuses", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date: dateStr, notes: value }),
+    }).catch(() => {});
+  }, []);
+
+  function handleNotesChange(dateStr: string, value: string) {
+    setNotes((prev) => ({ ...prev, [dateStr]: value }));
+    clearTimeout(notesTimers.current[dateStr]);
+    notesTimers.current[dateStr] = setTimeout(() => {
+      saveNotes(dateStr, value);
+    }, 500);
   }
 
   // --- Navigation ---
@@ -604,6 +640,20 @@ export function WorkoutCalendar() {
                 )}
               </div>
             </div>
+
+            {/* Notes */}
+            <div>
+              <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">
+                Notes
+              </p>
+              <textarea
+                value={notes[dateStr] ?? ""}
+                onChange={(e) => handleNotesChange(dateStr, e.target.value)}
+                placeholder="Add notes..."
+                rows={3}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+              />
+            </div>
           </div>
         ) : (
           <div className="rounded-lg border border-border p-6 text-center">
@@ -705,6 +755,20 @@ export function WorkoutCalendar() {
                   </button>
                 ),
               )}
+            </div>
+
+            {/* Notes */}
+            <div>
+              <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">
+                Notes
+              </p>
+              <textarea
+                value={notes[selected] ?? ""}
+                onChange={(e) => handleNotesChange(selected, e.target.value)}
+                placeholder="Add notes..."
+                rows={2}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent resize-y"
+              />
             </div>
           </div>
         ) : (
