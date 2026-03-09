@@ -550,22 +550,22 @@ export function WorkoutCalendar() {
                   setSelected(selected === dateStr ? null : dateStr)
                 }
                 className={`
-                  w-full text-left p-3 rounded-lg border border-border transition-all
-                  ${status ? `border-l-4 ${statusBorder(status)} ${statusBg(status)}` : ""}
+                  w-full text-left p-3 rounded-lg border transition-all
+                  ${status ? `border-l-4 ${statusBorder(status)} ${statusBg(status)} border-border` : "border-border"}
                   ${isSelected ? "ring-2 ring-accent ring-inset" : ""}
                 `}
               >
-                <div className="flex items-baseline gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs text-muted-foreground font-medium w-8">
                     {DAYS[i]}
                   </span>
                   <span
-                    className={`text-sm ${isToday ? "text-accent font-semibold" : "text-foreground font-medium"}`}
+                    className={`text-sm font-medium ${isToday ? "inline-flex items-center justify-center w-7 h-7 rounded-full bg-accent text-white" : "text-foreground"}`}
                   >
-                    {d.toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
+                    {d.getDate()}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {d.toLocaleDateString("en-US", { month: "short" })}
                   </span>
                   {workout && (
                     <span
