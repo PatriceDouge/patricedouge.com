@@ -10,17 +10,17 @@ import {
 
 interface LiftDetailProps {
   dateStr: string;
-  workoutLabel: string;
+  liftKey: string;
   compact?: boolean;
   isAdmin?: boolean;
 }
 
-export function LiftDetail({ dateStr, workoutLabel, compact, isAdmin }: LiftDetailProps) {
+export function LiftDetail({ dateStr, liftKey, compact, isAdmin }: LiftDetailProps) {
   const [logs, setLogs] = useState<Record<string, SetLog[]>>({});
   const [mounted, setMounted] = useState(false);
   const debounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
-  const template = getLiftTemplate(workoutLabel);
+  const template = getLiftTemplate(liftKey);
 
   useEffect(() => {
     setMounted(true);

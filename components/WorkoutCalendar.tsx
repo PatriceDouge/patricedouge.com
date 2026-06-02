@@ -107,16 +107,23 @@ function formatWorkoutDescription(description: string): string {
 }
 
 function compactMonthLabel(label: string): string {
+  if (label === "RACE: Half") return "RACE HM";
+  if (label === "RACE: 10-Mi") return "RACE 10M";
+  if (label.startsWith("RACE:")) return `RACE ${label.slice(5).trim()}`;
+  // New summer-block labels
+  if (label === "MLR + Lower") return "MLR+Low";
+  if (label === "Recovery + Upper B") return "Rec+UB";
+  if (label === "Recovery + Strides") return "Rec+Str";
+  if (label === "Easy + Upper A") return "Easy+UA";
+  if (label === "Easy + Strides") return "Easy+Str";
+  if (label === "Long Run") return "Long";
+  // Legacy spring-block labels
   if (/^LT[12]$/.test(label)) return label;
   if (label.startsWith("Easy + Lift ")) return `E+L ${label.slice(-1)}`;
   if (label === "Easy Run") return "Easy";
   if (label === "Easy/Steady") return "E/Steady";
-  if (label === "Long Run") return "LR";
   if (label === "Recovery + Lift C") return "REC+L C";
   if (label === "Shakeout + Strides") return "Shk+Str";
-  if (label === "RACE: Half") return "RACE HM";
-  if (label === "RACE: 10-Mi") return "RACE 10M";
-  if (label.startsWith("RACE:")) return `RACE ${label.slice(5).trim()}`;
   return label;
 }
 
@@ -124,11 +131,8 @@ function compactMonthDetail(workout: Workout): string {
   const [milesPartRaw, detailPartRaw] = workout.summary.split("·");
   const miles = (milesPartRaw ?? "").trim();
   const detailPart = (detailPartRaw ?? "").trim();
-  const liftMatch = workout.label.match(/Lift ([ABC])/);
-  const isLtDay = workout.label === "LT1" || workout.label === "LT2";
 
-  if (isLtDay && detailPart) return `${miles} · ${detailPart}`;
-  if (liftMatch) return `${miles} · Lift ${liftMatch[1]}`;
+  if (detailPart) return `${miles} · ${detailPart}`;
   if (workout.category === "race") return `${miles} · Race`;
   return miles;
 }
@@ -659,8 +663,8 @@ export function WorkoutCalendar() {
                   {formattedDescription}
                 </p>
               )}
-              {workout.category === "lift" && (
-                <LiftDetail dateStr={dateStr} workoutLabel={workout.label} isAdmin={isAdmin} />
+              {workout.lift && (
+                <LiftDetail dateStr={dateStr} liftKey={workout.lift} isAdmin={isAdmin} />
               )}
             </div>
 
@@ -784,10 +788,10 @@ export function WorkoutCalendar() {
                   {formattedDescription}
                 </p>
               )}
-              {workout.category === "lift" && (
+              {workout.lift && (
                 <LiftDetail
                   dateStr={selected}
-                  workoutLabel={workout.label}
+                  liftKey={workout.lift}
                   compact
                   isAdmin={isAdmin}
                 />
