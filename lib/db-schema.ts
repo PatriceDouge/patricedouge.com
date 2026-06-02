@@ -6,6 +6,7 @@ export async function ensureSchema() {
       sql: `CREATE TABLE IF NOT EXISTS workout_statuses (
         date        TEXT PRIMARY KEY,
         status      TEXT NOT NULL,
+        lift_status TEXT DEFAULT '',
         category    TEXT DEFAULT '',
         label       TEXT DEFAULT '',
         summary     TEXT DEFAULT '',
@@ -28,7 +29,7 @@ export async function ensureSchema() {
   ]);
 
   // Migrations for existing DBs — SQLite errors on duplicate ADD COLUMN, so catch and ignore
-  const newColumns = ["category", "label", "summary", "description", "notes"];
+  const newColumns = ["lift_status", "category", "label", "summary", "description", "notes"];
   for (const col of newColumns) {
     try {
       await db.execute({

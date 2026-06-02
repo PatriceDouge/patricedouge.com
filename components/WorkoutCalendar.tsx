@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Footprints, Dumbbell } from "lucide-react";
 import {
   getWorkout,
   getTrainingWeek,
+  getLiftTemplate,
   formatDateKey,
   type Workout,
   type WorkoutCategory,
@@ -139,15 +140,6 @@ function compactMonthDetail(workout: Workout): string {
 
 // --- Date helpers ---
 
-function getDaysInMonth(y: number, m: number) {
-  return new Date(y, m + 1, 0).getDate();
-}
-
-function getMonStartDay(y: number, m: number) {
-  const d = new Date(y, m, 1).getDay();
-  return d === 0 ? 6 : d - 1; // Mon=0 … Sun=6
-}
-
 function getMondayOfWeek(date: Date): Date {
   const d = new Date(date);
   const dow = d.getDay();
@@ -162,18 +154,62 @@ function addDays(date: Date, n: number): Date {
   return d;
 }
 
+// --- Run / Lift view mode ---
+
+type TrainingMode = "run" | "lift";
+
+const LIFT_SHORT: Record<string, string> = {
+  upperA: "Upper A",
+  lower: "Lower",
+  upperB: "Upper B",
+};
+
+function liftExerciseSummary(liftKey: string): string {
+  const t = getLiftTemplate(liftKey);
+  if (!t) return "";
+  return t.groups.flatMap((g) => g.exercises.map((e) => e.name)).join(" · ");
+}
+
+/**
+ * Filter a day's workout for the active mode (used by the month/week grids).
+ * Run mode hides lift-only days and the lift block; lift mode surfaces the
+ * loggable lift as the cell's workout. Day/detail views bypass this and show
+ * the full day.
+ */
+function displayWorkout(dateStr: string, mode: TrainingMode): Workout | undefined {
+  const w = getWorkout(dateStr);
+  if (!w) return undefined;
+  if (mode === "run") {
+    if (w.category === "lift") return undefined;
+    const label = w.label.replace(/\s*\+\s*(Upper A|Upper B|Lower)$/, "");
+    return { ...w, label, lift: undefined };
+  }
+  // lift mode
+  if (!w.lift) return undefined;
+  const short = LIFT_SHORT[w.lift] ?? w.label;
+  return {
+    ...w,
+    category: "lift",
+    label: short,
+    summary: short,
+    description: liftExerciseSummary(w.lift),
+  };
+}
+
 // --- Component ---
 
 export function WorkoutCalendar() {
   const today = new Date();
   const detailPanelRef = useRef<HTMLDivElement | null>(null);
   const [view, setView] = useState<ViewMode>("month");
+  const [mode, setMode] = useState<TrainingMode>("run");
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth()); // 0-indexed
   const [weekStart, setWeekStart] = useState(() => getMondayOfWeek(today));
   const [dayDate, setDayDate] = useState(() => today);
   const [selected, setSelected] = useState<string | null>(null);
   const [statuses, setStatuses] = useState<Record<string, CompletionStatus>>({});
+  const [liftStatuses, setLiftStatuses] = useState<Record<string, CompletionStatus>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [mounted, setMounted] = useState(false);
   const [todayStr, setTodayStr] = useState("");
@@ -192,12 +228,15 @@ export function WorkoutCalendar() {
       .then((r) => r.json())
       .then((data: Record<string, WorkoutStatusRow>) => {
         const s: Record<string, CompletionStatus> = {};
+        const ls: Record<string, CompletionStatus> = {};
         const n: Record<string, string> = {};
         for (const [date, row] of Object.entries(data)) {
           if (row.status) s[date] = row.status;
+          if (row.liftStatus) ls[date] = row.liftStatus;
           if (row.notes) n[date] = row.notes;
         }
         setStatuses(s);
+        setLiftStatuses(ls);
         setNotes(n);
       })
       .catch(() => {});
@@ -257,8 +296,13 @@ export function WorkoutCalendar() {
     });
   }, [selected, view]);
 
-  function updateStatus(dateStr: string, status: CompletionStatus | null) {
-    setStatuses((prev) => {
+  function updateStatus(
+    dateStr: string,
+    status: CompletionStatus | null,
+    kind: "run" | "lift" = "run",
+  ) {
+    const setter = kind === "lift" ? setLiftStatuses : setStatuses;
+    setter((prev) => {
       if (status === null) {
         const next = { ...prev };
         delete next[dateStr];
@@ -273,6 +317,7 @@ export function WorkoutCalendar() {
       body: JSON.stringify({
         date: dateStr,
         status,
+        kind,
         category: workout?.category ?? "",
         label: workout?.label ?? "",
         summary: workout?.summary ?? "",
@@ -352,15 +397,95 @@ export function WorkoutCalendar() {
     });
   }
 
+  // === Run / Lift switch ===
+
+  function renderModeSwitch() {
+    const opts = [
+      ["run", "Running", Footprints],
+      ["lift", "Lifting", Dumbbell],
+    ] as const;
+    return (
+      <div className="flex gap-1 rounded-lg bg-muted-foreground/10 p-1 shrink-0">
+        {opts.map(([m, label, Icon]) => (
+          <button
+            key={m}
+            onClick={() => setMode(m)}
+            aria-label={label}
+            title={label}
+            className={`flex items-center gap-1.5 px-2.5 py-1 text-sm rounded-md transition-colors ${
+              mode === m
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Icon className="w-4 h-4" />
+            <span className="hidden sm:inline">{label}</span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  // === Status controls (separate run + lift on combined days) ===
+
+  function renderStatusSection(
+    dateStr: string,
+    runStatus: CompletionStatus | undefined,
+    liftStatus: CompletionStatus | undefined,
+    hasRun: boolean,
+    hasLift: boolean,
+    compact: boolean,
+  ) {
+    if (!isAdmin || (!hasRun && !hasLift)) return null;
+    const both = hasRun && hasLift;
+    const btnSize = compact ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm";
+
+    const row = (
+      kind: "run" | "lift",
+      current: CompletionStatus | undefined,
+      label: string,
+    ) => (
+      <div>
+        <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">
+          {label}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {(["completed", "partial", "missed"] as CompletionStatus[]).map((s) => (
+            <button
+              key={s}
+              onClick={() => updateStatus(dateStr, current === s ? null : s, kind)}
+              className={`${btnSize} rounded-lg border transition-colors capitalize ${statusBtnClass(s, current === s)}`}
+            >
+              {s === "completed" ? "Completed" : s === "partial" ? "Partial" : "Missed"}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+
+    return (
+      <div className="space-y-4">
+        {hasRun && row("run", runStatus, both ? "Run — status" : "Status")}
+        {hasLift && row("lift", liftStatus, both ? "Lift — status" : "Status")}
+      </div>
+    );
+  }
+
   // === MONTH VIEW ===
 
   function renderMonthView() {
-    const daysInMonth = getDaysInMonth(year, month);
-    const startPad = getMonStartDay(year, month);
-    const cells: (number | null)[] = [];
-    for (let i = 0; i < startPad; i++) cells.push(null);
-    for (let d = 1; d <= daysInMonth; d++) cells.push(d);
-    while (cells.length % 7 !== 0) cells.push(null);
+    // Full Mon–Sun weeks spanning month boundaries — adjacent-month days are
+    // filled in (dimmed) so the calendar flows continuously with no gaps.
+    const gridStart = getMondayOfWeek(new Date(year, month, 1));
+    const lastOfMonth = new Date(year, month + 1, 0);
+    const cells: Date[] = [];
+    for (
+      let cur = gridStart;
+      cur <= lastOfMonth || cells.length % 7 !== 0;
+      cur = addDays(cur, 1)
+    ) {
+      cells.push(cur);
+    }
 
     return (
       <div>
@@ -377,19 +502,12 @@ export function WorkoutCalendar() {
         </div>
         {/* Grid */}
         <div className="grid grid-cols-7 border-t border-border">
-          {cells.map((day, i) => {
-            if (day === null) {
-              return (
-                <div
-                  key={`empty-${i}`}
-                  className="border-b border-r border-l border-border min-h-[68px] sm:min-h-[120px]"
-                />
-              );
-            }
-
-            const dateStr = formatDateKey(new Date(year, month, day));
-            const workout = getWorkout(dateStr);
-            const status = statuses[dateStr];
+          {cells.map((date) => {
+            const dateStr = formatDateKey(date);
+            const day = date.getDate();
+            const inMonth = date.getMonth() === month;
+            const workout = displayWorkout(dateStr, mode);
+            const status = (mode === "lift" ? liftStatuses : statuses)[dateStr];
             const isToday = dateStr === todayStr;
             const isSelected = dateStr === selected;
             const mobileDetail = workout ? compactMonthDetail(workout) : "";
@@ -407,6 +525,7 @@ export function WorkoutCalendar() {
                   hover:bg-muted-foreground/5 cursor-pointer
                   ${status ? `border-l-4 ${statusBorder(status)} ${statusBg(status)}` : ""}
                   ${isSelected ? "ring-2 ring-accent ring-inset" : ""}
+                  ${inMonth ? "" : "opacity-40"}
                 `}
               >
                 {/* Date number */}
@@ -490,8 +609,8 @@ export function WorkoutCalendar() {
         <div className="hidden sm:grid grid-cols-7 border-t border-border">
           {days.map((d) => {
             const dateStr = formatDateKey(d);
-            const workout = getWorkout(dateStr);
-            const status = statuses[dateStr];
+            const workout = displayWorkout(dateStr, mode);
+            const status = (mode === "lift" ? liftStatuses : statuses)[dateStr];
             const isSelected = dateStr === selected;
             const formattedDescription = workout
               ? formatWorkoutDescription(workout.description)
@@ -539,8 +658,8 @@ export function WorkoutCalendar() {
         <div className="sm:hidden space-y-2">
           {days.map((d, i) => {
             const dateStr = formatDateKey(d);
-            const workout = getWorkout(dateStr);
-            const status = statuses[dateStr];
+            const workout = displayWorkout(dateStr, mode);
+            const status = (mode === "lift" ? liftStatuses : statuses)[dateStr];
             const isToday = dateStr === todayStr;
             const isSelected = dateStr === selected;
             const formattedDescription = workout
@@ -598,7 +717,11 @@ export function WorkoutCalendar() {
     const dateStr = formatDateKey(dayDate);
     const workout = getWorkout(dateStr);
     const week = getTrainingWeek(dateStr);
-    const status = statuses[dateStr];
+    const runStatus = statuses[dateStr];
+    const liftStatus = liftStatuses[dateStr];
+    const hasRun = !!workout && (workout.category === "run" || workout.category === "race");
+    const hasLift = !!workout?.lift;
+    const cardStatus = hasRun ? runStatus : liftStatus;
     const isToday = dateStr === todayStr;
     const formattedDescription = workout
       ? formatWorkoutDescription(workout.description)
@@ -635,8 +758,8 @@ export function WorkoutCalendar() {
             {/* Workout card */}
             <div
               className={`rounded-lg border border-border p-4 ${
-                status
-                  ? `border-l-4 ${statusBorder(status)} ${statusBg(status)}`
+                cardStatus
+                  ? `border-l-4 ${statusBorder(cardStatus)} ${statusBg(cardStatus)}`
                   : ""
               }`}
             >
@@ -663,38 +786,22 @@ export function WorkoutCalendar() {
                   {formattedDescription}
                 </p>
               )}
+              {/* Combined days: status sits above the lift breakdown */}
+              {isAdmin && hasRun && hasLift && (
+                <div className="mt-4">
+                  {renderStatusSection(dateStr, runStatus, liftStatus, true, true, false)}
+                </div>
+              )}
               {workout.lift && (
-                <LiftDetail dateStr={dateStr} liftKey={workout.lift} isAdmin={isAdmin} />
+                <div className={hasRun && hasLift ? "mt-5" : "mt-3"}>
+                  <LiftDetail dateStr={dateStr} liftKey={workout.lift} isAdmin={isAdmin} />
+                </div>
               )}
             </div>
 
-            {/* Status controls */}
-            {isAdmin && (
-              <div>
-                <p className="text-xs text-muted-foreground mb-3 font-medium uppercase tracking-wide">
-                  Status
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {(["completed", "partial", "missed"] as CompletionStatus[]).map(
-                    (s) => (
-                      <button
-                        key={s}
-                        onClick={() =>
-                          updateStatus(dateStr, status === s ? null : s)
-                        }
-                        className={`px-4 py-2 text-sm rounded-lg border transition-colors capitalize ${statusBtnClass(s, status === s)}`}
-                      >
-                        {s === "completed"
-                          ? "Completed"
-                          : s === "partial"
-                            ? "Partial"
-                            : "Missed"}
-                      </button>
-                    ),
-                  )}
-                </div>
-              </div>
-            )}
+            {/* Single-activity status (combined days show it above, before the lift) */}
+            {!(hasRun && hasLift) &&
+              renderStatusSection(dateStr, runStatus, liftStatus, hasRun, hasLift, false)}
 
             {/* Notes */}
             {isAdmin && (
@@ -730,7 +837,11 @@ export function WorkoutCalendar() {
 
     const workout = getWorkout(selected);
     const week = getTrainingWeek(selected);
-    const status = statuses[selected];
+    const runStatus = statuses[selected];
+    const liftStatus = liftStatuses[selected];
+    const hasRun = !!workout && (workout.category === "run" || workout.category === "race");
+    const hasLift = !!workout?.lift;
+    const cardStatus = hasRun ? runStatus : liftStatus;
     const [y, m, d] = selected.split("-").map(Number);
     const date = new Date(y, m - 1, d);
     const displayDate = date.toLocaleDateString("en-US", {
@@ -745,8 +856,8 @@ export function WorkoutCalendar() {
     return (
       <div
         className={`mt-4 rounded-lg border border-border p-4 ${
-          status
-            ? `border-l-4 ${statusBorder(status)} ${statusBg(status)}`
+          cardStatus
+            ? `border-l-4 ${statusBorder(cardStatus)} ${statusBg(cardStatus)}`
             : ""
         }`}
       >
@@ -788,6 +899,12 @@ export function WorkoutCalendar() {
                   {formattedDescription}
                 </p>
               )}
+              {/* Combined days: status sits above the lift breakdown */}
+              {isAdmin && hasRun && hasLift && (
+                <div className="mt-3">
+                  {renderStatusSection(selected, runStatus, liftStatus, true, true, true)}
+                </div>
+              )}
               {workout.lift && (
                 <LiftDetail
                   dateStr={selected}
@@ -798,24 +915,9 @@ export function WorkoutCalendar() {
               )}
             </div>
 
-            {/* Inline status controls */}
-            {isAdmin && (
-              <div className="flex flex-wrap gap-2">
-                {(["completed", "partial", "missed"] as CompletionStatus[]).map(
-                  (s) => (
-                    <button
-                      key={s}
-                      onClick={() =>
-                        updateStatus(selected, status === s ? null : s)
-                      }
-                      className={`px-3 py-1.5 text-xs rounded-lg border transition-colors capitalize ${statusBtnClass(s, status === s)}`}
-                    >
-                      {s}
-                    </button>
-                  ),
-                )}
-              </div>
-            )}
+            {/* Single-activity status (combined days show it above, before the lift) */}
+            {!(hasRun && hasLift) &&
+              renderStatusSection(selected, runStatus, liftStatus, hasRun, hasLift, true)}
 
             {/* Notes */}
             {isAdmin && (
@@ -848,21 +950,24 @@ export function WorkoutCalendar() {
       <div className="space-y-2 sm:space-y-0">
         {/* Mobile: two rows */}
         <div className="flex items-center justify-between sm:hidden">
-          {/* View tabs */}
-          <div className="flex gap-1 rounded-lg bg-muted-foreground/10 p-1">
-            {(["month", "week", "day"] as ViewMode[]).map((v) => (
-              <button
-                key={v}
-                onClick={() => setView(v)}
-                className={`px-3 py-1 text-sm rounded-md capitalize transition-colors ${
-                  view === v
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {v}
-              </button>
-            ))}
+          <div className="flex items-center gap-2">
+            {/* View tabs */}
+            <div className="flex gap-1 rounded-lg bg-muted-foreground/10 p-1">
+              {(["month", "week", "day"] as ViewMode[]).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setView(v)}
+                  className={`px-3 py-1 text-sm rounded-md capitalize transition-colors ${
+                    view === v
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
+            {renderModeSwitch()}
           </div>
           {/* Today */}
           <button
@@ -907,6 +1012,7 @@ export function WorkoutCalendar() {
               </button>
             ))}
           </div>
+          {renderModeSwitch()}
           <div className="flex-1 flex items-center justify-center gap-2">
             <button
               onClick={navPrev}

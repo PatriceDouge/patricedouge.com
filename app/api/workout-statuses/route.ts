@@ -6,6 +6,7 @@ import type { CompletionStatus } from "@/lib/workouts";
 
 export type WorkoutStatusRow = {
   status: CompletionStatus;
+  liftStatus: CompletionStatus;
   category: string;
   label: string;
   summary: string;
@@ -16,12 +17,13 @@ export type WorkoutStatusRow = {
 export async function GET() {
   await ensureSchema();
   const rows = await db.execute(
-    "SELECT date, status, category, label, summary, description, notes FROM workout_statuses"
+    "SELECT date, status, lift_status, category, label, summary, description, notes FROM workout_statuses"
   );
   const statuses: Record<string, WorkoutStatusRow> = {};
   for (const row of rows.rows) {
     statuses[row.date as string] = {
       status: row.status as CompletionStatus,
+      liftStatus: (row.lift_status as CompletionStatus) ?? "",
       category: (row.category as string) ?? "",
       label: (row.label as string) ?? "",
       summary: (row.summary as string) ?? "",
@@ -37,10 +39,11 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   await ensureSchema();
-  const { date, status, category, label, summary, description } =
+  const { date, status, kind = "run", category, label, summary, description } =
     (await request.json()) as {
       date: string;
       status: CompletionStatus | null;
+      kind?: "run" | "lift";
       category?: string;
       label?: string;
       summary?: string;
@@ -49,6 +52,24 @@ export async function PUT(request: Request) {
 
   if (!date) {
     return NextResponse.json({ error: "date is required" }, { status: 400 });
+  }
+
+  if (kind === "lift") {
+    // Lift completion lives in its own column; never touches run metadata.
+    if (status === null) {
+      await db.execute({
+        sql: "UPDATE workout_statuses SET lift_status = '' WHERE date = ?",
+        args: [date],
+      });
+    } else {
+      await db.execute({
+        sql: `INSERT INTO workout_statuses (date, status, lift_status)
+              VALUES (?, '', ?)
+              ON CONFLICT(date) DO UPDATE SET lift_status = ?`,
+        args: [date, status, status],
+      });
+    }
+    return NextResponse.json({ ok: true });
   }
 
   if (status === null) {
