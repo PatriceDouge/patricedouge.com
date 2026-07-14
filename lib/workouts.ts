@@ -35,7 +35,7 @@ export const trainingWeeks: TrainingWeek[] = [
   { label: "W4", start: "2026-06-22", end: "2026-06-28", miles: "50", note: "Base build" },
   { label: "W5", start: "2026-06-29", end: "2026-07-05", miles: "42", note: "Down week · reduce Lower volume" },
   { label: "W6", start: "2026-07-06", end: "2026-07-12", miles: "49", note: "Strength · 3×14′ sub-T + HMP-finish long" },
-  { label: "W7", start: "2026-07-13", end: "2026-07-19", miles: "40", note: "Rebuild · restart + daily runs (Mon added)" },
+  { label: "W7", start: "2026-07-13", end: "2026-07-19", miles: "40", note: "Rebuild · restart · 6-day week (Mon off)" },
   { label: "W8", start: "2026-07-20", end: "2026-07-26", miles: "44", note: "Base build · 7-day weeks" },
   { label: "W9", start: "2026-07-27", end: "2026-08-02", miles: "48", note: "Base build" },
   { label: "W10", start: "2026-08-03", end: "2026-08-09", miles: "42", note: "Tune-up 10K Sat 8/8 · no Lower/Upper B" },
@@ -159,14 +159,14 @@ const data: [string, WorkoutCategory, string, string, string, string?][] = [
   ["2026-07-10", "run", "Recovery + Upper B", "5mi · recovery", "5 mi recovery (9:30–10:30+/mi).", "upperB"],
   ["2026-07-11", "run", "Easy + Strides", "5mi · easy + strides", "5 mi easy (8:55–9:45/mi) + 4×20s strides."],
   ["2026-07-12", "run", "Long Run", "12mi · last 4 @ HMP", "12 mi long run, last 4 mi at HM pace (7:25/mi)."],
-  // W7 (Jul 13–19) — 40 · rebuild (restart + Mon added)
-  ["2026-07-13", "run", "Recovery + Upper A", "4mi · recovery", "4 mi recovery (9:30–10:30+/mi). Easy day after Sunday long run.", "upperA"],
+  // W7 (Jul 13–19) — 40 · rebuild (restart · 6-day, Mon off — this week only)
+  // Mon 7/13 dropped; its 4 mi redistributed across Wed/Fri/Sat/Sun to keep the week at 40.
   ["2026-07-14", "run", "Sub-T", "6mi · 4×6:00 @ LT1", "1 mi WU, 4×6:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 6 total."],
-  ["2026-07-15", "run", "MLR + Lower", "8mi · MLR easy", "8 mi medium-long run, easy (8:55–9:45/mi).", "lower"],
+  ["2026-07-15", "run", "MLR + Lower", "9mi · MLR easy", "9 mi medium-long run, easy (8:55–9:45/mi).", "lower"],
   ["2026-07-16", "run", "Threshold", "5mi · 3×6:00 @ T", "1 mi WU, 3×6:00 @ T (7:20–7:35/mi) w/2:00 jog, 1 mi CD, easy to 5 total."],
-  ["2026-07-17", "run", "Recovery + Upper B", "3mi · recovery", "3 mi recovery (9:30–10:30+/mi).", "upperB"],
-  ["2026-07-18", "run", "Easy + Strides", "4mi · easy + strides", "4 mi easy (8:55–9:45/mi) + 4×20s strides."],
-  ["2026-07-19", "run", "Long Run", "10mi · last 2 steady", "10 mi long run: easy, last 2 mi steady (8:05–8:40/mi)."],
+  ["2026-07-17", "run", "Recovery + Upper B", "4mi · recovery", "4 mi recovery (9:30–10:30+/mi).", "upperB"],
+  ["2026-07-18", "run", "Easy + Strides", "5mi · easy + strides", "5 mi easy (8:55–9:45/mi) + 4×20s strides."],
+  ["2026-07-19", "run", "Long Run", "11mi · last 2 steady", "11 mi long run: easy, last 2 mi steady (8:05–8:40/mi)."],
   // W8 (Jul 20–26) — 44 · base build
   ["2026-07-20", "run", "Recovery + Upper A", "4mi · recovery", "4 mi recovery (9:30–10:30+/mi). Easy day after Sunday long run.", "upperA"],
   ["2026-07-21", "run", "Sub-T", "7mi · 5×6:00 @ LT1", "1 mi WU, 5×6:00 @ LT1 (7:45–8:05/mi) w/90s jog, 1 mi CD, easy to 7 total."],
