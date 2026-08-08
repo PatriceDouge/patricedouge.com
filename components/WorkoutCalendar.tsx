@@ -118,6 +118,19 @@ function compactMonthLabel(label: string): string {
   if (label === "Easy + Upper A") return "Easy+UA";
   if (label === "Easy + Strides") return "Easy+Str";
   if (label === "Long Run") return "Long";
+  // Marathon-block labels
+  if (label === "Gen Aerobic + Strides" || label === "GA + Strides") return "GA+Str";
+  if (label === "GA + Hills + Strides") return "GA+Hills";
+  if (label === "Gen Aerobic") return "GA";
+  if (label === "LT Intervals" || label === "LT Tempo" || label === "LT Run") return "LT";
+  if (label === "Med-Long Run") return "MLR";
+  if (label === "MP Long Run") return "MP Long";
+  if (label === "Long Run + MP") return "Long+MP";
+  if (label === "VO2max") return "VO2";
+  if (label === "Dress Rehearsal") return "Dress";
+  if (label === "Rest — or Turkey Trot") return "Rest/Race";
+  if (label === "Tune-Up Race") return "Tune-Up";
+  if (label === "RACE: Disney Marathon") return "RACE 26.2";
   // Legacy spring-block labels
   if (/^LT[12]$/.test(label)) return label;
   if (label.startsWith("Easy + Lift ")) return `E+L ${label.slice(-1)}`;
@@ -136,6 +149,17 @@ function compactMonthDetail(workout: Workout): string {
   if (detailPart) return `${miles} · ${detailPart}`;
   if (workout.category === "race") return `${miles} · Race`;
   return miles;
+}
+
+/** Leading mileage from a summary like "12mi · MLR", "~9mi · 10K race", "9–13mi · …" (ranges use the low end). */
+function workoutMiles(w: Workout | undefined): number {
+  if (!w || w.category === "lift") return 0;
+  const m = w.summary.match(/^~?(\d+(?:\.\d+)?)/);
+  return m ? parseFloat(m[1]) : 0;
+}
+
+function fmtMiles(n: number): string {
+  return String(Math.round(n * 10) / 10);
 }
 
 // --- Date helpers ---
@@ -471,6 +495,59 @@ export function WorkoutCalendar() {
     );
   }
 
+  // === WEEKLY RUN TOTALS (Running mode) ===
+
+  function weekRunTotals(week: Date[]) {
+    let planned = 0;
+    let done = 0;
+    for (const d of week) {
+      const ds = formatDateKey(d);
+      const w = getWorkout(ds);
+      if (!w || w.category === "lift") continue;
+      const mi = workoutMiles(w);
+      planned += mi;
+      if (statuses[ds] === "completed") done += mi;
+    }
+    return { planned, done };
+  }
+
+  function renderWeekTotalCell(week: Date[]) {
+    const { planned, done } = weekRunTotals(week);
+    const trainingWeek = getTrainingWeek(formatDateKey(week[0]));
+    const empty = planned === 0 && done === 0;
+    return (
+      <div className="border-b border-r border-border bg-muted-foreground/[0.04] px-0.5 py-1 sm:p-1.5 flex flex-col items-center justify-center gap-0.5 text-center min-w-0">
+        {empty ? (
+          <span className="text-[10px] text-muted-foreground/40">—</span>
+        ) : (
+          <>
+            {trainingWeek && (
+              <span className="hidden sm:block text-[9px] font-medium text-muted-foreground/60 leading-none">
+                {trainingWeek.label}
+              </span>
+            )}
+            <span
+              className="text-[10px] sm:text-xs font-semibold leading-tight"
+              title="Planned run miles this week"
+            >
+              {fmtMiles(planned)}
+            </span>
+            <span
+              className={`text-[9px] sm:text-[10px] leading-none whitespace-nowrap ${
+                done > 0
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-muted-foreground/40"
+              }`}
+              title="Completed run miles this week"
+            >
+              ✓ {fmtMiles(done)}
+            </span>
+          </>
+        )}
+      </div>
+    );
+  }
+
   // === MONTH VIEW ===
 
   function renderMonthView() {
@@ -487,22 +564,15 @@ export function WorkoutCalendar() {
       cells.push(cur);
     }
 
-    return (
-      <div>
-        {/* Day headers */}
-        <div className="grid grid-cols-7 mb-1">
-          {DAYS.map((d) => (
-            <div
-              key={d}
-              className="text-xs text-muted-foreground text-center py-2 font-medium"
-            >
-              {d}
-            </div>
-          ))}
-        </div>
-        {/* Grid */}
-        <div className="grid grid-cols-7 border-t border-border">
-          {cells.map((date) => {
+    // Chunk into Mon–Sun rows so Running mode can append a weekly totals rail.
+    const weeks: Date[][] = [];
+    for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
+    const showTotals = mode === "run";
+    const gridCols = showTotals
+      ? "grid-cols-[repeat(7,minmax(0,1fr))_2.25rem] sm:grid-cols-[repeat(7,minmax(0,1fr))_3.25rem]"
+      : "grid-cols-7";
+
+    const renderDayCell = (date: Date) => {
             const dateStr = formatDateKey(date);
             const day = date.getDate();
             const inMonth = date.getMonth() === month;
@@ -546,7 +616,7 @@ export function WorkoutCalendar() {
 
                 {/* Workout info */}
                 {workout && (
-                  <div className="mt-1 min-w-0 space-y-0.5">
+                  <div className="mt-1 w-full min-w-0 space-y-0.5">
                     <span
                       className={`text-[10px] sm:text-xs leading-tight block truncate font-medium ${
                         workout.category === "race"
@@ -568,7 +638,34 @@ export function WorkoutCalendar() {
 
               </button>
             );
-          })}
+    };
+
+    return (
+      <div>
+        {/* Day headers */}
+        <div className={`grid ${gridCols} mb-1`}>
+          {DAYS.map((d) => (
+            <div
+              key={d}
+              className="text-xs text-muted-foreground text-center py-2 font-medium"
+            >
+              {d}
+            </div>
+          ))}
+          {showTotals && (
+            <div className="text-[10px] sm:text-xs text-muted-foreground text-center py-2 font-medium">
+              Mi
+            </div>
+          )}
+        </div>
+        {/* Grid — one row per week, with a weekly mileage rail in Running mode */}
+        <div className="border-t border-border">
+          {weeks.map((week) => (
+            <div key={formatDateKey(week[0])} className={`grid ${gridCols}`}>
+              {week.map(renderDayCell)}
+              {showTotals && renderWeekTotalCell(week)}
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -578,9 +675,40 @@ export function WorkoutCalendar() {
 
   function renderWeekView() {
     const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+    const trainingWeek = getTrainingWeek(formatDateKey(weekStart));
+    const totals = mode === "run" ? weekRunTotals(days) : null;
 
     return (
       <div>
+        {/* Weekly mileage summary (Running mode) */}
+        {totals && (totals.planned > 0 || totals.done > 0) && (
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-3 text-xs text-muted-foreground">
+            {trainingWeek && (
+              <span className="font-medium px-2 py-0.5 rounded-full bg-muted-foreground/10">
+                {trainingWeek.label}
+              </span>
+            )}
+            <span>
+              <span className="font-semibold text-foreground">
+                {fmtMiles(totals.planned)}
+              </span>{" "}
+              mi planned
+            </span>
+            <span>·</span>
+            <span
+              className={
+                totals.done > 0
+                  ? "text-emerald-600 dark:text-emerald-400 font-medium"
+                  : ""
+              }
+            >
+              {fmtMiles(totals.done)} mi done
+            </span>
+            {trainingWeek?.note && (
+              <span className="hidden sm:inline">· {trainingWeek.note}</span>
+            )}
+          </div>
+        )}
         {/* Day headers (desktop) */}
         <div className="hidden sm:grid grid-cols-7 mb-1">
           {days.map((d, i) => {
