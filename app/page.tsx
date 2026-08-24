@@ -66,7 +66,7 @@ export default function Home() {
         </header>
 
         <section>
-          <h2 className="text-xl font-bold mb-6">Writing</h2>
+          <h2 className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-6">Writing</h2>
           <ul className="space-y-4">
             {posts.map((post) => (
               <li key={post.slug}>

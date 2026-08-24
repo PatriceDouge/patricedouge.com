@@ -13,7 +13,7 @@ import {
 import type { ReactNode } from "react";
 
 export const mono = {
-  fontFamily: "var(--font-geist-mono, ui-monospace, monospace)",
+  fontFamily: "var(--font-fragment-mono, ui-monospace, monospace)",
 };
 
 // ── Figure ──────────────────────────

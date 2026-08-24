@@ -7,7 +7,7 @@
   --background: #ffffff;
   --foreground: #18181b;
   --muted: #52525b;
-  --muted-foreground: #a1a1aa;
+  --muted-foreground: #71717a;
   --border: #e4e4e7;
   --accent: #2563eb;
 }
@@ -16,14 +16,14 @@
   --background: #09090b;
   --foreground: #fafafa;
   --muted: #a1a1aa;
-  --muted-foreground: #71717a;
+  --muted-foreground: #85858e;
   --border: #27272a;
   --accent: #3b82f6;
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-fragment-mono);
+  --font-mono: var(--font-fragment-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
@@ -32,9 +32,33 @@
   --color-accent: var(--accent);
 }
 
+html {
+  /* Fragment Mono has one weight. Never let the browser fake the others. */
+  font-synthesis-weight: none;
+}
+
+/*
+ * With one weight available, `font-semibold`/`font-bold` render identically to
+ * body text. Re-express that emphasis on the colour ramp instead.
+ *
+ * :where() holds specificity at zero, so any explicit text-* utility still
+ * wins — deliberately muted elements stay muted, and this only promotes text
+ * that had no colour of its own. Colour also leaves glyph metrics untouched,
+ * which keeps the monospace grid in the training tables aligned.
+ *
+ * Uppercase labels are excluded: case plus tracking already carry their
+ * emphasis, so promoting them would make 9px micro-labels shout.
+ */
+:where(.font-bold, .font-semibold):where(:not(.uppercase)) {
+  color: var(--foreground);
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
+  font-size: 14px;
+  line-height: 1.75;
+  letter-spacing: -0.01em;
 }
 
 /* Prose customization for blog posts */
@@ -47,11 +71,22 @@ body {
   --tw-prose-quotes: var(--muted);
 }
 
+.prose {
+  font-size: 14px;
+}
+
 .prose h2 {
-  margin-top: 2em;
+  margin-top: 2.25em;
   margin-bottom: 0.75em;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* No bold available, so emphasis reads as a colour shift off the muted body. */
+.prose strong {
+  font-weight: 400;
+  color: var(--tw-prose-bold);
 }
 
 .prose p {

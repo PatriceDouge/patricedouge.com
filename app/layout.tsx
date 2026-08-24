@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fragment_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
-const geistSans = Geist({
+// Fragment Mono ships a single weight (400). Synthetic bold is disabled in
+// globals.css, so hierarchy comes from size, color and tracking instead.
+const fragmentMono = Fragment_Mono({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-fragment-mono",
 });
 
 export const metadata: Metadata = {
@@ -46,7 +45,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+      <body className={`${fragmentMono.variable} font-sans antialiased`}>
         <ThemeProvider>{children}</ThemeProvider>
         <Analytics />
       </body>

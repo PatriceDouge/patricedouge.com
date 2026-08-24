@@ -12,7 +12,7 @@ import {
 } from "framer-motion";
 
 const mono = {
-  fontFamily: "var(--font-geist-mono, ui-monospace, monospace)",
+  fontFamily: "var(--font-fragment-mono, ui-monospace, monospace)",
 };
 
 // ────────────────────────────────────

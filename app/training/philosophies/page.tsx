@@ -128,7 +128,7 @@ function PhilosophyCard({
                 style={{
                   color,
                   fontFamily:
-                    "var(--font-geist-mono, ui-monospace, monospace)",
+                    "var(--font-fragment-mono, ui-monospace, monospace)",
                 }}
               >
                 {stat}

@@ -23,7 +23,7 @@ export default function WritingPage() {
           </Link>
           <ThemeToggle />
         </div>
-        <h1 className="text-2xl font-bold tracking-tight mb-8">Writing</h1>
+        <h1 className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-8">Writing</h1>
         <ul className="space-y-4">
           {posts.map((post) => (
             <li key={post.slug}>
