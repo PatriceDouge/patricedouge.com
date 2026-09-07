@@ -1,8 +1,8 @@
-import { getAllPosts, formatDate } from "@/lib/posts";
+import { getPosts, formatDate } from "@/lib/content";
 import { Playground } from "./Playground";
 
 export default function TypePlaygroundPage() {
-  const posts = getAllPosts().map((post) => ({
+  const posts = getPosts().map((post) => ({
     slug: post.slug,
     title: post.title,
     date: formatDate(post.date),

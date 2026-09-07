@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllPosts, formatDate } from "@/lib/posts";
+import { getPosts, formatDate } from "@/lib/content";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import type { Metadata } from "next";
 
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function WritingPage() {
-  const posts = getAllPosts();
+  const posts = getPosts();
 
   return (
     <main className="min-h-screen px-4 sm:px-6 py-8 md:py-12 bg-background text-foreground transition-colors">

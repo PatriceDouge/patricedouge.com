@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -59,46 +58,4 @@ body {
   font-size: 14px;
   line-height: 1.75;
   letter-spacing: -0.01em;
-}
-
-/* Prose customization for blog posts */
-.prose {
-  --tw-prose-body: var(--muted);
-  --tw-prose-headings: var(--foreground);
-  --tw-prose-links: var(--foreground);
-  --tw-prose-bold: var(--foreground);
-  --tw-prose-code: var(--foreground);
-  --tw-prose-quotes: var(--muted);
-}
-
-.prose {
-  font-size: 14px;
-}
-
-.prose h2 {
-  margin-top: 2.25em;
-  margin-bottom: 0.75em;
-  font-size: 1.25rem;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-}
-
-/* No bold available, so emphasis reads as a colour shift off the muted body. */
-.prose strong {
-  font-weight: 400;
-  color: var(--tw-prose-bold);
-}
-
-.prose p {
-  margin-bottom: 1.25em;
-  line-height: 1.75;
-}
-
-.prose a {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.prose a:hover {
-  color: var(--accent);
 }
