@@ -1,0 +1,103 @@
+---
+title: "The Path to Ubiquitous AI, Visualized"
+date: "2026-02-21"
+description: "A visual breakdown of the path to ubiquitous AI, built with Claude Code."
+---
+
+The [demo for this article](https://taalas.com/the-path-to-ubiquitous-ai/) blew my mind. I was curious to learn more about how it all worked under the hood. I had Claude Code break down the architecture and the differences between traditional chip architectures and custom AI silicon, then visualize each piece. I had Claude refine each visual until it made sense to me.
+
+<SectionDivider text="Everything below was written and visualized by Claude" />
+
+AI inference is the most significant computational workload humanity has created. Every chat completion, every image generation, every code suggestion requires trillions of arithmetic operations.
+
+The hardware running these workloads—GPUs designed for rendering pixels—was never built for this. A company called [Taalas](https://taalas.com) is rethinking the stack from the silicon up: custom chips where every transistor serves a single model. This is a deep dive into how that works.
+
+## The Memory Wall
+
+When a language model generates a token, it reads its entire weight matrix from memory. For an 8B parameter model at 16-bit precision, that's ~16 gigabytes of data. Every single token.
+
+The arithmetic itself is simple—multiply and accumulate. The bottleneck is feeding data to the compute units fast enough. DRAM is dense and cheap but takes ~100 nanoseconds to access. On-chip SRAM is fast (~1ns) but tiny and expensive.
+
+<MemoryWallDiagram />
+
+This is the memory wall. Compute speed has grown exponentially over decades, but memory bandwidth hasn't kept pace. For AI inference—which is almost entirely memory-bound—this is the fundamental constraint.
+
+## The GPU Approach
+
+Modern GPUs address the memory wall with brute force. High Bandwidth Memory (HBM) stacks DRAM dies vertically, connected via silicon interposers, delivering terabytes per second of bandwidth. Thousands of cores operate in parallel.
+
+This works, but it's expensive. HBM costs 5-10× more per gigabyte than standard DRAM. Silicon interposers are among the most expensive components in modern semiconductors. Power consumption reaches 300-700 watts per chip, requiring liquid cooling.
+
+The entire modern AI infrastructure stack—advanced packaging, HBM, massive I/O bandwidth, liquid cooling—exists to work around the memory wall. What if you could eliminate it instead?
+
+## Compute Where the Data Lives
+
+Taalas inverts the problem. Instead of moving data faster, they eliminate data movement entirely.
+
+Their approach: embed compute circuits directly inside the memory array. Each memory cell stores a model weight AND performs the multiply-accumulate operation in place. The data never leaves the memory.
+
+To understand what that means at the hardware level, compare how a single multiply operation works in each system.
+
+<ComputeInMemoryCell />
+
+<ArchitectureComparison />
+
+The memory array structure maps naturally to linear algebra. Each row stores weights for one output neuron. Each column carries one input activation. The result appears as current on the output lines—an entire matrix-vector multiply in a single cycle.
+
+<MatrixMultiplyArray />
+
+This is compute-in-memory at DRAM-level density. The bit-line and word-line structure of a memory array maps naturally to matrix-vector multiplication—the core operation of neural network inference. Store the weight matrix in the array, apply input activations as voltages, and read out the result as currents. The entire multiply happens in one memory access cycle.
+
+No HBM stacks. No silicon interposer. No massive I/O bandwidth. No liquid cooling.
+
+The difference shows up in the physical hardware stack.
+
+<ChipStackComparison />
+
+## One Chip, One Model
+
+Taalas goes further. Each chip is hardwired for a specific model's computation graph. To understand what that means, consider how a GPU actually runs a model.
+
+A transformer like Llama 3.1 8B has a fixed structure: an embedding layer, then 32 identical transformer blocks (each containing self-attention and a feed-forward network), then a final output projection. This computation graph—the exact sequence of matrix multiplications—is known ahead of time and never changes.
+
+On a GPU, this fixed graph is executed dynamically. For every operation, the processor fetches an instruction from memory, decodes it, schedules it to a free core, loads the relevant weights, executes the multiply, and writes the result back. Then repeats. Thousands of times per token.
+
+<ExecutionComparison />
+
+A Taalas chip eliminates all of that overhead. The model's computation graph is physically wired into the silicon. Layer 1's output connects directly to layer 2's input. The attention weights for each head sit in dedicated memory cells that also perform the multiply. There are no instructions to fetch, no cores to schedule, no results to shuttle around. The chip IS the model.
+
+Think of it this way: a GPU is a programmable calculator—you enter each step, wait for the answer, enter the next step. A Taalas chip is a purpose-built machine—data flows in one end and the answer comes out the other.
+
+<DieComparison />
+
+This also enables aggressive quantization. Standard models use 16-bit precision (2 bytes per weight). Taalas co-designs the quantization with the hardware—3-bit and 6-bit formats on HC1—shrinking model size by 3-5× with minimal quality loss. When you control both the silicon and the model mapping, you can tune precision to exactly what each layer needs.
+
+The tradeoff is real: each chip runs exactly one model. A new model requires a new chip. Taalas's bet is that a handful of dominant models—the ones handling billions of daily requests—justify dedicated silicon.
+
+## The Numbers
+
+HC1, their first-generation platform, is hardwired for Llama 3.1 8B.
+
+<PerformanceBars />
+
+Built by 24 people. $30M spent of more than $200M raised. The efficiency comes from total specialization: one chip, one model, compute in memory.
+
+HC2, the second generation, adopts standard 4-bit floating-point formats with higher density and speed, targeting frontier-scale models.
+
+## Why This Matters
+
+If AI inference can be made 10-20× cheaper and more efficient, it changes what's possible. Real-time AI in every device. Inference at the edge. AI as utility infrastructure, not a luxury compute resource.
+
+Total specialization—one chip, one model, compute in memory—is Taalas's bet on the path to ubiquitous AI.
+
+<h2 className="text-xl font-semibold mt-16 mb-2">Silicon Vocabulary</h2>
+
+<p className="text-muted leading-relaxed text-sm mb-2">DRAM, CIM, HBM, ASIC—these acronyms get thrown around constantly in chip discussions, but they mean very specific things. Understanding the distinction helps the concepts above click into place.</p>
+
+<p className="text-muted-foreground text-xs mb-6">Interactive format inspired by <a href="https://how-terminals-work.vercel.app/" className="text-foreground hover:underline underline-offset-2 transition-colors" target="_blank" rel="noopener noreferrer">How Terminals Work</a>.</p>
+
+<Glossary />
+
+<div className="mt-16 pt-6 border-t border-border">
+  <p className="text-sm text-muted-foreground">Based on <a href="https://taalas.com/the-path-to-ubiquitous-ai/" className="text-foreground hover:underline underline-offset-2 transition-colors" target="_blank" rel="noopener noreferrer">The Path to Ubiquitous AI, Visualized</a> by Taalas.</p>
+</div>

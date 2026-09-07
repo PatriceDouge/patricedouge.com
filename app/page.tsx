@@ -1,10 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getAllPosts, formatDate } from "@/lib/posts";
+import { notFound } from "next/navigation";
+import { getPosts, formatDate, loadDocument } from "@/lib/content";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-export default function Home() {
-  const posts = getAllPosts();
+export default async function Home() {
+  const posts = getPosts();
+  const home = await loadDocument("pages", "home");
+
+  if (!home) {
+    notFound();
+  }
+
+  const { Content } = home;
 
   return (
     <main className="min-h-screen px-6 py-8 md:py-12 bg-background text-foreground transition-colors">
@@ -22,47 +30,7 @@ export default function Home() {
         </div>
 
         <header className="mb-16">
-          <p className="text-muted leading-relaxed">
-            I&apos;m Patrice Dougé, a software engineer at{" "}
-            <a
-              href="https://wistia.com"
-              className="text-foreground hover:underline underline-offset-2 transition-colors"
-            >
-              Wistia
-            </a>
-            . Born in Pétion-Ville, Haiti, currently based in Sarasota, FL.
-            These days I&apos;m learning as much as I can about coding agents,
-            AI and how to build products users love. Most of my time I&apos;m
-            either{" "}
-            <a
-              href="https://github.com/PatriceDouge"
-              className="text-foreground hover:underline underline-offset-2 transition-colors"
-            >
-              coding
-            </a>
-            {", "}
-            <Link
-              href="/training"
-              className="text-foreground hover:underline underline-offset-2 transition-colors"
-            >
-              training
-            </Link>
-            {", or being a girl dad of two."}
-          </p>
-          <br />
-          <p className="text-muted leading-relaxed">
-            It&apos;s an incredible time to be a software engineer. It&apos;s
-            empowering to know how much leverage we have with AI tools, but it
-            can also be overwhelming with all the different ways of doing
-            things. There&apos;s an interesting tension between shipping code
-            with craft and shipping fast as long as it works.
-          </p>
-          <br />
-          <p className="text-muted leading-relaxed">
-            I&apos;m working to find that balance and continue growing as an
-            engineer. This is where I share what I&apos;m learning along the
-            way.
-          </p>
+          <Content />
         </header>
 
         <section>

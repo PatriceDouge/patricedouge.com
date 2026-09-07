@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   motion,
   useInView,
@@ -10,7 +8,7 @@ import {
   useMotionValue,
   useTransform,
 } from "framer-motion";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 export const mono = {
   fontFamily: "var(--font-fragment-mono, ui-monospace, monospace)",
@@ -117,6 +115,73 @@ export function AnimatedBar({
   );
 }
 
+// ── BarLabel / BarGroup ─────────────
+
+/**
+ * The uppercase micro-label that titles a run of `AnimatedBar`s. Pass `spaced`
+ * for a second label inside the same group, and `accent` where the source
+ * highlighted the contrasting model.
+ */
+export function BarLabel({
+  children,
+  spaced = false,
+  accent = false,
+  mono: useMono = false,
+}: {
+  children: ReactNode;
+  spaced?: boolean;
+  accent?: boolean;
+  mono?: boolean;
+}) {
+  return (
+    <div
+      className={[
+        "text-xs mb-2 font-medium uppercase tracking-wider",
+        accent ? "text-accent" : "text-muted-foreground",
+        spaced ? "mt-6" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      style={useMono ? mono : undefined}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Wrapper for a run of `AnimatedBar`s. `caption` renders as a sibling below the
+ * group, not inside it, which is where the hand-written articles put it.
+ */
+export function BarGroup({
+  title,
+  caption,
+  mono: useMono = false,
+  children,
+}: {
+  title?: string;
+  caption?: string;
+  mono?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      <div className="my-8 space-y-3">
+        {title && <BarLabel mono={useMono}>{title}</BarLabel>}
+        {children}
+      </div>
+      {caption && (
+        <p
+          className="text-xs text-muted-foreground text-center mb-8"
+          style={useMono ? mono : undefined}
+        >
+          {caption}
+        </p>
+      )}
+    </>
+  );
+}
+
 // ── SectionDivider ──────────────────
 
 export function SectionDivider({ text }: { text: string }) {
@@ -129,145 +194,155 @@ export function SectionDivider({ text }: { text: string }) {
   );
 }
 
-// ── ExternalLink ────────────────────
+// ── KeyStat / KeyStats ──────────────
 
-export function ExternalLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="text-foreground hover:underline underline-offset-2 transition-colors"
-    >
-      {children}
-    </a>
-  );
+/**
+ * Number formatting crosses the server/client boundary, so it is named by a
+ * string preset rather than passed as a function.
+ */
+export type StatFormat = "locale" | "integer" | "decimal1" | "marathon";
+
+function formatMarathon(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.round(seconds % 60);
+  return `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
-// ── KeyStat ─────────────────────────
+function statFormatter(
+  format: StatFormat,
+  suffix: string,
+  suffixFrom: number
+): (n: number) => string {
+  const base: (n: number) => string =
+    format === "integer"
+      ? (n) => Math.round(n).toString()
+      : format === "decimal1"
+        ? (n) => n.toFixed(1)
+        : format === "marathon"
+          ? (n) => formatMarathon(n)
+          : (n) => Math.round(n).toLocaleString();
+
+  return (n) =>
+    base(n) + (suffix && Math.round(n) >= suffixFrom ? suffix : "");
+}
 
 export function KeyStat({
   value,
   label,
-  format,
+  color,
+  format = "locale",
+  suffix = "",
+  suffixFrom = 0,
 }: {
   value: number;
   label: string;
-  format?: (n: number) => string;
+  color?: string;
+  format?: StatFormat;
+  /** Appended to the formatted number, e.g. "%" or "+". */
+  suffix?: string;
+  /** Hold the suffix back until the counter passes this value. */
+  suffixFrom?: number;
 }) {
+  const style: CSSProperties = color ? { ...mono, color } : mono;
   return (
     <div className="text-center">
-      <div className="text-2xl font-bold text-accent" style={mono}>
-        <AnimatedNumber value={value} format={format} />
+      <div
+        className={color ? "text-2xl font-bold" : "text-2xl font-bold text-accent"}
+        style={style}
+      >
+        <AnimatedNumber
+          value={value}
+          format={statFormatter(format, suffix, suffixFrom)}
+        />
       </div>
       <div className="text-xs text-muted-foreground mt-1">{label}</div>
     </div>
   );
 }
 
-// ── ComparisonGrid ──────────────────
+/**
+ * Column counts are a static map: Tailwind only emits classes it can see as
+ * literal strings.
+ */
+const KEY_STATS_COLS = {
+  2: "my-10 grid grid-cols-2 gap-4",
+  3: "my-10 grid grid-cols-3 gap-4",
+  4: "grid grid-cols-2 sm:grid-cols-4 gap-6 my-8",
+} as const;
 
-export function ComparisonGrid({
-  left,
-  right,
-  leftLabel,
-  rightLabel,
+export function KeyStats({
+  cols = 3,
+  children,
 }: {
-  left: ReactNode;
-  right: ReactNode;
-  leftLabel: string;
-  rightLabel: string;
+  cols?: 2 | 3 | 4;
+  children: ReactNode;
 }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.3 });
+  return <div className={KEY_STATS_COLS[cols]}>{children}</div>;
+}
 
+// ── Sources ─────────────────────────
+
+const SOURCES_GAP = {
+  2: "space-y-2",
+  3: "space-y-3",
+} as const;
+
+/**
+ * The closing "Sources" / "Sources & Further Reading" block. Its children come
+ * from markdown, so the body-copy defaults are overridden back to the smaller,
+ * muted treatment the articles used. Both flavours are supported: a run of
+ * paragraphs (annotated sources) and a bare list (link-only sources).
+ */
+export function Sources({
+  gap = 3,
+  children,
+}: {
+  gap?: 2 | 3;
+  children: ReactNode;
+}) {
   return (
     <div
-      ref={ref}
-      className="grid grid-cols-1 sm:grid-cols-2 gap-6 my-8"
+      className={[
+        SOURCES_GAP[gap],
+        "text-sm text-muted-foreground",
+        // `text-sm` carries a 1.25rem line-height; the body-copy `leading-relaxed`
+        // on markdown paragraphs has to be put back to it.
+        "[&>p]:mt-0! [&>p]:text-muted-foreground! [&>p]:leading-5!",
+        "[&>ul]:list-none [&>ul]:pl-0",
+      ].join(" ")}
     >
-      <motion.div
-        initial={{ opacity: 0, x: -10 }}
-        animate={inView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-      >
-        <div className="text-xs text-muted-foreground mb-3 font-medium uppercase tracking-wider">
-          {leftLabel}
-        </div>
-        {left}
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, x: 10 }}
-        animate={inView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
-      >
-        <div className="text-xs text-accent mb-3 font-medium uppercase tracking-wider">
-          {rightLabel}
-        </div>
-        {right}
-      </motion.div>
+      {children}
     </div>
   );
 }
 
-// ── ArticleLayout ───────────────────
-
-export function ArticleLayout({
-  title,
-  subtitle,
-  children,
-  accentColor,
-}: {
-  title: string;
-  subtitle?: string;
-  children: ReactNode;
-  accentColor?: string;
-}) {
+/**
+ * A markdown list with roomier item spacing, for lists whose items run to
+ * several lines each.
+ */
+export function Points({ children }: { children: ReactNode }) {
   return (
-    <main className="min-h-screen px-6 py-16 md:py-24 bg-background text-foreground transition-colors">
-      <article className="mx-auto max-w-xl">
-        <div className="flex justify-between items-center">
-          <Link
-            href="/training/philosophies"
-            className="text-sm text-muted hover:text-accent transition-colors"
-          >
-            &larr; All Philosophies
-          </Link>
-          <ThemeToggle />
-        </div>
+    <div className="[p+&]:mt-5 [&>ul>li:not(:last-child)]:mb-3!">
+      {children}
+    </div>
+  );
+}
 
-        <header className="mt-8 mb-12">
-          {accentColor && (
-            <div
-              className="w-10 h-1 rounded mb-4"
-              style={{ background: accentColor }}
-            />
-          )}
-          <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-          {subtitle && (
-            <p className="mt-3 text-muted-foreground leading-relaxed">
-              {subtitle}
-            </p>
-          )}
-        </header>
+// ── FadeIn ──────────────────────────
 
-        {children}
+export function FadeIn({ children }: { children: ReactNode }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.2 });
 
-        <div className="mt-16 pt-6 border-t border-border">
-          <Link
-            href="/training/philosophies"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            &larr; Back to All Philosophies
-          </Link>
-        </div>
-      </article>
-    </main>
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 12 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      {children}
+    </motion.div>
   );
 }
