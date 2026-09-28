@@ -301,15 +301,15 @@ const data: [string, WorkoutCategory, string, string, string, string?][] = [
   ["2026-09-27", "run", "Med-Long Run", "14mi · MLR", "14 mi medium-long (8:50–9:30/mi · HR 150–168)."],
   // ==================== FRIDAY LONG-RUN SCHEDULE — from W4 ====================
   // W4 · 14 wtg (Sep 28–Oct 4) — 42 · bridge week: Sun 14 → Fri 14, so no Mon quality yet
-  ["2026-09-28", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) the day after Sunday's 14. Bridge week into the Friday long-run schedule."],
+  ["2026-09-28", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152)."],
   ["2026-09-29", "run", "GA + Hills + Lower", "8mi · hills + 8×100", "8 mi general aerobic (HR 144–162) + 6×10 sec steep hill sprints (walk-back recovery) + 8×100 m strides. PM Lower, RIR 1–2.", "lower"],
   ["2026-09-30", "run", "Gen Aerobic", "10mi · GA", "10 mi general aerobic (9:00–9:40/mi · HR 144–162)."],
-  ["2026-10-01", "lift", "Upper A", "Upper A · strength", "Rest from running — Thursdays are the fixed rest day now. Upper A full session.", "upperA"],
-  ["2026-10-02", "run", "Long Run", "14mi · long", "FIRST FRIDAY LONG RUN. 14 mi (8:50–9:30/mi · HR 150–168). Start slow end, finish faster half."],
+  ["2026-10-01", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A full session.", "upperA"],
+  ["2026-10-02", "run", "Long Run", "14mi · long", "14 mi (8:50–9:30/mi · HR 150–168). Start slow end, finish faster half."],
   ["2026-10-03", "lift", "Upper B (optional)", "Upper B · optional", "Rest from running (kid day). Optional Upper B if there's a window.", "upperB"],
   ["2026-10-04", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill. Skip without guilt if the day doesn't allow."],
   // W5 · 13 wtg (Oct 5–11) — 45 · first sub-T singles + first MP run
-  ["2026-10-05", "run", "Sub-T Singles", "9mi · 6×6′ sub-T", "2 mi WU, 6×6:00 @ sub-T (~HM effort · ~7:40–7:50/mi · HR 166–176, never >178) w/60s jog, CD easy to 9 total. Replaces Pfitz's 5 @ LT — finish feeling like you had 2 more reps in you."],
+  ["2026-10-05", "run", "Sub-T Singles", "9mi · 6×6′ sub-T", "2 mi WU, 6×6:00 @ sub-T (~HM effort · ~7:40–7:50/mi · HR 166–176, never >178) w/60s jog, CD easy to 9 total. Finish feeling like you had 2 more reps in you."],
   ["2026-10-06", "run", "Gen Aerobic + Lower", "10mi · GA", "10 mi general aerobic (9:00–9:40/mi · HR 144–162). PM Lower — moderate, RIR 2–3: first MP run Friday.", "lower"],
   ["2026-10-07", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152)."],
   ["2026-10-08", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A full session.", "upperA"],
@@ -317,7 +317,7 @@ const data: [string, WorkoutCategory, string, string, string, string?][] = [
   ["2026-10-10", "lift", "Upper B (optional)", "Upper B · optional", "Rest from running (kid day). Optional Upper B.", "upperB"],
   ["2026-10-11", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
   // W6 · 12 wtg (Oct 12–18) — 37 · RECOVERY week
-  ["2026-10-12", "run", "GA + Strides", "8mi · GA + 8×100", "8 mi general aerobic (HR 144–162) + 8×100 m strides. Recovery week: no sub-T."],
+  ["2026-10-12", "run", "GA + Strides", "8mi · GA + 8×100", "8 mi general aerobic (HR 144–162) + 8×100 m strides."],
   ["2026-10-13", "run", "Gen Aerobic + Lower", "8mi · GA", "8 mi general aerobic (9:00–9:40/mi · HR 144–162). PM Lower — down week: drop Bulgarian Split Squat + Hip Thrust.", "lower"],
   ["2026-10-14", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152)."],
   ["2026-10-15", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A — down week, drop 1 set per lift.", "upperA"],
@@ -325,21 +325,21 @@ const data: [string, WorkoutCategory, string, string, string, string?][] = [
   ["2026-10-17", "lift", "Upper B (optional)", "Upper B · optional", "Rest from running (kid day). Optional Upper B — last optional 3rd lift of the block.", "upperB"],
   ["2026-10-18", "run", "Recovery", "4mi · recovery", "4 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
   // W7 · 11 wtg (Oct 19–25) — 50 · LT + Endurance block begins
-  ["2026-10-19", "run", "Sub-T Singles", "10mi · 4×10′ sub-T", "2 mi WU, 4×10:00 @ sub-T (~25–30K effort · ~7:45–8:00/mi · HR 166–176, never >178) w/90s jog, CD easy to 10 total. Replaces 5 @ LT."],
+  ["2026-10-19", "run", "Sub-T Singles", "10mi · 4×10′ sub-T", "2 mi WU, 4×10:00 @ sub-T (~25–30K effort · ~7:45–8:00/mi · HR 166–176, never >178) w/90s jog, CD easy to 10 total."],
   ["2026-10-20", "run", "Med-Long Run + Lower", "11mi · MLR", "11 mi medium-long (8:50–9:30/mi · HR 150–168). Midweek MLRs start — early a.m. is the slot that survives work + kids. PM Lower, RIR 1–2.", "lower"],
   ["2026-10-21", "run", "GA + Strides", "7mi · GA + 8×100", "7 mi general aerobic (HR 144–162) + 8×100 m strides."],
   ["2026-10-22", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A full session.", "upperA"],
   ["2026-10-23", "run", "Long Run", "18mi · long", "18 mi long run (8:45–9:25/mi · HR 150–168). Fuel every 30–40 min; longest run of your life to date."],
   ["2026-10-25", "run", "Recovery", "4mi · recovery", "4 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
   // W8 · 10 wtg (Oct 26–Nov 1) — 54 · first 20-miler
-  ["2026-10-26", "run", "Sub-T Singles", "10mi · 3×15′ sub-T", "2 mi WU, 3×15:00 @ sub-T (~25–30K effort · ~7:45–8:00/mi · HR 166–176, never >178) w/2:00 jog, CD easy to 10 total. Replaces 6 @ LT."],
+  ["2026-10-26", "run", "Sub-T Singles", "10mi · 3×15′ sub-T", "2 mi WU, 3×15:00 @ sub-T (~25–30K effort · ~7:45–8:00/mi · HR 166–176, never >178) w/2:00 jog, CD easy to 10 total."],
   ["2026-10-27", "run", "Med-Long Run + Lower", "12mi · MLR", "12 mi medium-long (8:50–9:30/mi · HR 150–168). PM Lower, RIR 2 — 20 miles Friday.", "lower"],
   ["2026-10-28", "run", "Recovery + Strides", "7mi · rec + 6×100", "7 mi recovery (~9:45–10:15/mi · HR <152) + 6×100 m strides."],
   ["2026-10-29", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A full session.", "upperA"],
   ["2026-10-30", "run", "Long Run", "20mi · long", "FIRST 20-MILER. 8:45–9:25/mi · HR 150–168. Treat it like a dress rehearsal: fueling, kit, early start."],
   ["2026-11-01", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
   // W9 · 9 wtg (Nov 2–8) — 48 · big MP run · MLR moves to Mon to give Friday room
-  ["2026-11-02", "run", "Med-Long Run + Lower", "14mi · MLR", "14 mi medium-long (8:45–9:25/mi · HR 150–168). Monday this week so there are 3 easy days before Friday's MP run. PM Lower, RIR 2–3 — maintenance mode from here.", "lower"],
+  ["2026-11-02", "run", "Med-Long Run + Lower", "14mi · MLR", "14 mi medium-long (8:45–9:25/mi · HR 150–168). PM Lower, RIR 2–3 — maintenance mode from here.", "lower"],
   ["2026-11-03", "run", "Recovery", "6mi · recovery", "6 mi recovery (~10:00/mi · HR <152)."],
   ["2026-11-04", "run", "Recovery + Strides", "6mi · rec + 6×100", "6 mi recovery (HR <152) + 6×100 m strides."],
   ["2026-11-05", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance (RIR 2–3).", "upperA"],
@@ -353,7 +353,7 @@ const data: [string, WorkoutCategory, string, string, string, string?][] = [
   ["2026-11-13", "run", "Med-Long Run", "14mi · MLR", "14 mi medium-long (8:45–9:25/mi · HR 150–168). The week's long run."],
   ["2026-11-15", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
   // W11 · 7 wtg (Nov 16–22) — 55 · PEAK WEEK
-  ["2026-11-16", "run", "Sub-T Singles", "11mi · 5×10′ sub-T", "2 mi WU, 5×10:00 @ sub-T (~25–30K effort · ~7:40–7:55/mi by now · HR 166–176, never >178) w/90s jog, CD to 11 total. Biggest threshold session of the plan — replaces 7 @ LT."],
+  ["2026-11-16", "run", "Sub-T Singles", "11mi · 5×10′ sub-T", "2 mi WU, 5×10:00 @ sub-T (~25–30K effort · ~7:40–7:55/mi by now · HR 166–176, never >178) w/90s jog, CD to 11 total. Biggest threshold session of the plan."],
   ["2026-11-17", "run", "Med-Long Run + Lower", "12mi · MLR", "12 mi medium-long (8:45–9:25/mi · HR 150–168). PM Lower, RIR 2–3.", "lower"],
   ["2026-11-18", "run", "Recovery + Strides", "7mi · rec + 6×100", "7 mi recovery (HR <152) + 6×100 m strides."],
   ["2026-11-19", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance.", "upperA"],
@@ -361,7 +361,7 @@ const data: [string, WorkoutCategory, string, string, string, string?][] = [
   ["2026-11-22", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
   // W12 · 6 wtg (Nov 23–29) — 51 · Race prep · time trial replaces Sat tune-up (and the week's VO2)
   ["2026-11-23", "race", "Time Trial · 10K", "10mi · 10K time trial", "2 mi WU + 4×100 strides, 10K solo time trial (track or flat loop), CD to 10 total. Even pacing, last 2K hard. Calibrates MP: 10K pace + ~45–60s/mi ≈ realistic marathon pace — lean to the fast end, since it's 3 days after a 20."],
-  ["2026-11-24", "run", "Med-Long Run", "12mi · MLR", "12 mi medium-long (8:45–9:25/mi · HR 150–168) on tired legs — Pfitz's race-then-long pattern. No Lower this week."],
+  ["2026-11-24", "run", "Med-Long Run", "12mi · MLR", "12 mi medium-long (8:45–9:25/mi · HR 150–168) on tired legs. No Lower this week."],
   ["2026-11-25", "run", "Recovery + Strides", "6mi · rec + 6×100", "6 mi recovery (HR <152) + 6×100 m strides."],
   ["2026-11-26", "lift", "Upper A", "Upper A · strength", "Thanksgiving. Rest from running. Upper A, maintenance — or skip, it's a holiday.", "upperA"],
   ["2026-11-27", "run", "Long Run", "17mi · long", "17 mi long run (8:40–9:20/mi · HR 150–168). Day after Thanksgiving — early start before the house wakes."],
@@ -374,7 +374,7 @@ const data: [string, WorkoutCategory, string, string, string, string?][] = [
   ["2026-12-04", "run", "MP Long Run", "18mi · 14 @ MP", "18 mi: 4 easy, then 14 @ MP — HR 164–176, target ~7:30–7:45/mi. THE rehearsal: 5 a.m. start, full race kit + fueling. If 7:25–7:30 feels controlled at ≤176, the goal is on."],
   ["2026-12-06", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
   // W14 · 4 wtg (Dec 7–13) — 49 · time trial
-  ["2026-12-07", "race", "Time Trial · 5K", "8mi · 5K time trial", "2 mi WU + 4×100 strides, 5K solo time trial, CD to 8 total. 3 days after 14 @ MP, so a 5K (not 10K) — shorter effort, cleaner read. Final MP calibration: lock the race number from this plus the Dec 4 MP run."],
+  ["2026-12-07", "race", "Time Trial · 5K", "8mi · 5K time trial", "2 mi WU + 4×100 strides, 5K solo time trial, CD to 8 total. Final MP calibration: lock the race number from this plus the Dec 4 MP run."],
   ["2026-12-08", "run", "Med-Long Run", "11mi · MLR", "11 mi medium-long (8:40–9:20/mi · HR 150–168). No Lower this week."],
   ["2026-12-09", "run", "GA + Strides", "7mi · GA + 6×100", "7 mi general aerobic (HR 144–162) + 6×100 m strides."],
   ["2026-12-10", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance.", "upperA"],
@@ -389,7 +389,7 @@ const data: [string, WorkoutCategory, string, string, string, string?][] = [
   ["2026-12-20", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
   // W16 · 2 wtg (Dec 21–27) — 43 · taper · Christmas is Friday, so TT + long run go Mon/Tue (Pfitz's race-then-long)
   ["2026-12-21", "race", "Time Trial · 5K", "9mi · 5K time trial", "2.5 mi WU + 4×100 strides, 5K solo time trial, CD to 9 total. Last hard effort before Disney."],
-  ["2026-12-22", "run", "Long Run", "16mi · long", "16 mi long run (8:40–9:20/mi · HR 150–168) the day after the time trial — same back-to-back as Pfitz's Sat race + Sun long. Moved off Friday for Christmas; Wed 12/23 works too."],
+  ["2026-12-22", "run", "Long Run", "16mi · long", "16 mi long run (8:40–9:20/mi · HR 150–168) on legs tired from the time trial."],
   ["2026-12-23", "run", "Recovery", "6mi · recovery", "6 mi recovery (~10:00/mi · HR <152)."],
   ["2026-12-24", "lift", "Upper A", "Upper A · strength", "Christmas Eve. Rest from running. Upper A — taper: drop 1 set per lift.", "upperA"],
   ["2026-12-25", "run", "Recovery + Strides", "5mi · rec + 6×100", "Christmas. 5 mi recovery (HR <152) + 6×100 m strides — short and early."],
