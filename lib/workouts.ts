@@ -40,7 +40,7 @@ export const trainingWeeks: TrainingWeek[] = [
   { label: "W9", start: "2026-07-27", end: "2026-08-02", miles: "48", note: "Base build" },
   { label: "R0", start: "2026-08-03", end: "2026-08-09", miles: "19", note: "Restart weekend · marathon ramp begins Mon 8/10" },
   // ===== Marathon block — Goal: Disney World Marathon Sun Jan 10, 2027 (~5am) =====
-  // Ramp (Aug 10 – Sep 6), then Pfitzinger 18/55 (Mon Sep 7 → race Jan 10)
+  // Ramp (Aug 10 – Sep 6), Pfitzinger 18/55 (Sep 7 – Nov 15), then Norwegian-style singles to race day
   { label: "R1", start: "2026-08-10", end: "2026-08-16", miles: "27", note: "Marathon ramp · consistency > volume" },
   { label: "R2", start: "2026-08-17", end: "2026-08-23", miles: "30", note: "Ramp · LT reintro 4×8:00" },
   { label: "R3", start: "2026-08-24", end: "2026-08-30", miles: "35", note: "Ramp · 12mi long run" },
@@ -54,15 +54,15 @@ export const trainingWeeks: TrainingWeek[] = [
   { label: "W7", start: "2026-10-19", end: "2026-10-25", miles: "50", note: "11 wtg · LT+Endurance · 18mi long (Fri)" },
   { label: "W8", start: "2026-10-26", end: "2026-11-01", miles: "54", note: "10 wtg · First 20-miler (Fri)" },
   { label: "W9", start: "2026-11-02", end: "2026-11-08", miles: "48", note: "9 wtg · MP run: 16 w/12 @ MP (Fri)" },
-  { label: "W10", start: "2026-11-09", end: "2026-11-15", miles: "43", note: "8 wtg · RECOVERY · VO2max intro" },
-  { label: "W11", start: "2026-11-16", end: "2026-11-22", miles: "55", note: "7 wtg · PEAK week · 20mi long (Fri)" },
-  { label: "W12", start: "2026-11-23", end: "2026-11-29", miles: "51", note: "6 wtg · Race prep · Mon 10K time trial · Thanksgiving rest" },
-  { label: "W13", start: "2026-11-30", end: "2026-12-06", miles: "52", note: "5 wtg · MP run: 18 w/14 @ MP (Fri) — biggest of the plan" },
-  { label: "W14", start: "2026-12-07", end: "2026-12-13", miles: "49", note: "4 wtg · Mon 5K time trial — lock race pace" },
-  { label: "W15", start: "2026-12-14", end: "2026-12-20", miles: "52", note: "3 wtg · Last 20-miler (Fri)" },
-  { label: "W16", start: "2026-12-21", end: "2026-12-27", miles: "43", note: "2 wtg · Taper · Mon 5K TT + Tue 16 (Christmas Fri)" },
-  { label: "W17", start: "2026-12-28", end: "2027-01-03", miles: "33", note: "1 wtg · Taper · Fri 1/1 12mi" },
-  { label: "W18", start: "2027-01-04", end: "2027-01-10", miles: "22 + race", note: "RACE WEEK · Disney Marathon Sun 1/10 · ~5am start" },
+  { label: "W10", start: "2026-11-09", end: "2026-11-15", miles: "46", note: "8 wtg · RECOVERY · VO2max intro" },
+  { label: "W11", start: "2026-11-16", end: "2026-11-22", miles: "48", note: "7 wtg · Six run days · 4×10′ sub-T · 16mi long (Fri)" },
+  { label: "W12", start: "2026-11-23", end: "2026-11-29", miles: "50", note: "6 wtg · 3×15′ sub-T · 18 w/6 @ MP (Fri) · Thanksgiving" },
+  { label: "W13", start: "2026-11-30", end: "2026-12-06", miles: "53", note: "5 wtg · 20mi long (Fri) · MP reps (Sun)" },
+  { label: "W14", start: "2026-12-07", end: "2026-12-13", miles: "50", note: "4 wtg · MP test: 17 w/12 @ MP (Fri) — sets race pace" },
+  { label: "W15", start: "2026-12-14", end: "2026-12-20", miles: "54", note: "3 wtg · PEAK week · Last 20-miler (Fri)" },
+  { label: "W16", start: "2026-12-21", end: "2026-12-27", miles: "44", note: "2 wtg · Taper · 14 w/8 @ MP (Wed) · Christmas Fri" },
+  { label: "W17", start: "2026-12-28", end: "2027-01-03", miles: "32", note: "1 wtg · Taper · Fri 1/1 11 w/3 @ MP" },
+  { label: "W18", start: "2027-01-04", end: "2027-01-10", miles: "20 + race", note: "RACE WEEK · Disney Marathon Sun 1/10 · ~5am start" },
 ];
 
 // [date, category, label, summary, description, lift?]
@@ -209,7 +209,7 @@ const data: [string, WorkoutCategory, string, string, string, string?][] = [
   ["2026-08-09", "run", "Long Run", "10mi · long", "10 mi long run (8:50–9:30/mi · HR 150–168, 75–84%). Start at the slow end, finish in the faster half."],
   // ============================================================================
   // MARATHON BLOCK — Disney World Marathon, Sun Jan 10, 2027 (~5:00 a.m. start)
-  // Pfitzinger 18/55 · Goal ~7:25/mi (3:14:xx) IF tune-up races confirm it
+  // Pfitzinger 18/55 through Nov 15 · goal and structure change for the final 8 weeks (see Nov 16)
   //
   // HR zones (Pfitz Table 8.1 · max HR 200) + current pace equivalents (Aug 2026):
   //   Recovery         <76%  → <152 bpm  · ~10:00/mi
@@ -351,62 +351,90 @@ const data: [string, WorkoutCategory, string, string, string, string?][] = [
   ["2026-11-11", "run", "GA + Hills + Strides", "8mi · hills + 8×100", "8 mi general aerobic (HR 144–162) + 6×10 sec hill sprints + 8×100 m strides."],
   ["2026-11-12", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A — down week, drop 1 set per lift.", "upperA"],
   ["2026-11-13", "run", "Med-Long Run", "14mi · MLR", "14 mi medium-long (8:45–9:25/mi · HR 150–168). The week's long run."],
-  ["2026-11-15", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
-  // W11 · 7 wtg (Nov 16–22) — 55 · PEAK WEEK
-  ["2026-11-16", "run", "Sub-T Singles", "11mi · 5×10′ sub-T", "2 mi WU, 5×10:00 @ sub-T (~25–30K effort · ~7:40–7:55/mi by now · HR 166–176, never >178) w/90s jog, CD to 11 total. Biggest threshold session of the plan."],
-  ["2026-11-17", "run", "Med-Long Run + Lower", "12mi · MLR", "12 mi medium-long (8:45–9:25/mi · HR 150–168). PM Lower, RIR 2–3.", "lower"],
-  ["2026-11-18", "run", "Recovery + Strides", "7mi · rec + 6×100", "7 mi recovery (HR <152) + 6×100 m strides."],
-  ["2026-11-19", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance.", "upperA"],
-  ["2026-11-20", "run", "Long Run", "20mi · long", "20 mi long run (8:40–9:20/mi · HR 150–168). Peak week caps here — everything after this is sharpening."],
-  ["2026-11-22", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
-  // W12 · 6 wtg (Nov 23–29) — 51 · Race prep · time trial replaces Sat tune-up (and the week's VO2)
-  ["2026-11-23", "race", "Time Trial · 10K", "10mi · 10K time trial", "2 mi WU + 4×100 strides, 10K solo time trial (track or flat loop), CD to 10 total. Even pacing, last 2K hard. Calibrates MP: 10K pace + ~45–60s/mi ≈ realistic marathon pace — lean to the fast end, since it's 3 days after a 20."],
-  ["2026-11-24", "run", "Med-Long Run", "12mi · MLR", "12 mi medium-long (8:45–9:25/mi · HR 150–168) on tired legs. No Lower this week."],
-  ["2026-11-25", "run", "Recovery + Strides", "6mi · rec + 6×100", "6 mi recovery (HR <152) + 6×100 m strides."],
-  ["2026-11-26", "lift", "Upper A", "Upper A · strength", "Thanksgiving. Rest from running. Upper A, maintenance — or skip, it's a holiday.", "upperA"],
-  ["2026-11-27", "run", "Long Run", "17mi · long", "17 mi long run (8:40–9:20/mi · HR 150–168). Day after Thanksgiving — early start before the house wakes."],
-  ["2026-11-29", "run", "Recovery", "6mi · recovery", "6 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
-  // W13 · 5 wtg (Nov 30–Dec 6) — 52 · biggest MP run
-  ["2026-11-30", "run", "VO2max", "9mi · 5×1000 @ 5K", "2 mi WU, 5×1,000 m @ 5K effort (~4:15–4:20 per rep · HR 186–190), jog 50–90% of rep time, CD to 9 total."],
-  ["2026-12-01", "run", "Med-Long Run + Lower", "12mi · MLR", "12 mi medium-long (8:40–9:20/mi · HR 150–168). PM Lower, RIR 2–3 — huge MP run Friday.", "lower"],
-  ["2026-12-02", "run", "Gen Aerobic", "8mi · GA", "8 mi general aerobic (8:55–9:35/mi · HR 144–162)."],
-  ["2026-12-03", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance.", "upperA"],
-  ["2026-12-04", "run", "MP Long Run", "18mi · 14 @ MP", "18 mi: 4 easy, then 14 @ MP — HR 164–176, target ~7:30–7:45/mi. THE rehearsal: 5 a.m. start, full race kit + fueling. If 7:25–7:30 feels controlled at ≤176, the goal is on."],
-  ["2026-12-06", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
-  // W14 · 4 wtg (Dec 7–13) — 49 · time trial
-  ["2026-12-07", "race", "Time Trial · 5K", "8mi · 5K time trial", "2 mi WU + 4×100 strides, 5K solo time trial, CD to 8 total. Final MP calibration: lock the race number from this plus the Dec 4 MP run."],
-  ["2026-12-08", "run", "Med-Long Run", "11mi · MLR", "11 mi medium-long (8:40–9:20/mi · HR 150–168). No Lower this week."],
-  ["2026-12-09", "run", "GA + Strides", "7mi · GA + 6×100", "7 mi general aerobic (HR 144–162) + 6×100 m strides."],
-  ["2026-12-10", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance.", "upperA"],
-  ["2026-12-11", "run", "Long Run", "17mi · long", "17 mi long run (8:40–9:20/mi · HR 150–168)."],
-  ["2026-12-13", "run", "Recovery", "6mi · recovery", "6 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
-  // W15 · 3 wtg (Dec 14–20) — 52 · last 20-miler
-  ["2026-12-14", "run", "VO2max", "10mi · 4×1200 @ 5K", "2 mi WU, 4×1,200 m @ 5K effort (~5:05–5:15 per rep · HR 186–190), jog 50–90% of rep time, CD to 10 total."],
-  ["2026-12-15", "run", "Med-Long Run + Lower", "11mi · MLR", "11 mi medium-long (8:40–9:20/mi · HR 150–168). PM: LAST Lower session of the block — moderate, RIR 3. Upper-only from here.", "lower"],
-  ["2026-12-16", "run", "Recovery + Strides", "6mi · rec + 6×100", "6 mi recovery (HR <152) + 6×100 m strides."],
-  ["2026-12-17", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance.", "upperA"],
-  ["2026-12-18", "run", "Long Run", "20mi · long", "LAST 20-MILER (8:40–9:20/mi · HR 150–168). 5 a.m. start — full Disney rehearsal: kit, breakfast timing, fueling."],
-  ["2026-12-20", "run", "Recovery", "5mi · recovery", "5 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
-  // W16 · 2 wtg (Dec 21–27) — 43 · taper · Christmas is Friday, so TT + long run go Mon/Tue (Pfitz's race-then-long)
-  ["2026-12-21", "race", "Time Trial · 5K", "9mi · 5K time trial", "2.5 mi WU + 4×100 strides, 5K solo time trial, CD to 9 total. Last hard effort before Disney."],
-  ["2026-12-22", "run", "Long Run", "16mi · long", "16 mi long run (8:40–9:20/mi · HR 150–168) on legs tired from the time trial."],
-  ["2026-12-23", "run", "Recovery", "6mi · recovery", "6 mi recovery (~10:00/mi · HR <152)."],
-  ["2026-12-24", "lift", "Upper A", "Upper A · strength", "Christmas Eve. Rest from running. Upper A — taper: drop 1 set per lift.", "upperA"],
-  ["2026-12-25", "run", "Recovery + Strides", "5mi · rec + 6×100", "Christmas. 5 mi recovery (HR <152) + 6×100 m strides — short and early."],
-  ["2026-12-27", "run", "Gen Aerobic", "7mi · GA", "7 mi general aerobic (HR 144–162) — stroller or treadmill."],
-  // W17 · 1 wtg (Dec 28–Jan 3) — 33 · taper
-  ["2026-12-28", "run", "VO2max", "8mi · 4×1200 @ 5K", "2 mi WU, 4×1,200 m @ 5K effort (~5:05–5:15 · HR 186–190), jog 50–90% of rep time, CD to 8 total. Last real workout."],
-  ["2026-12-29", "run", "Recovery + Strides", "5mi · rec + 8×100", "5 mi recovery (HR <152) + 8×100 m strides."],
-  ["2026-12-30", "run", "Recovery", "4mi · recovery", "4 mi recovery (~10:00/mi · HR <152)."],
+  ["2026-11-15", "run", "Easy Run", "8mi · easy", "8 mi easy (9:30–10:00/mi · HR <150) — treadmill, fan on high. No pick-ups."],
+
+  // ============================================================================
+  // FINAL 8 WEEKS — from Mon Nov 16 · Norwegian-style singles on a Friday long run
+  // Goal: A 7:45–7:50/mi (3:23–3:25) · B 8:00/mi (3:30). Fri Dec 11 decides which.
+  //
+  //   Mon  Easy (a.m.) + strides
+  //   Tue  Sub-T reps (a.m.) · Lower (p.m., light) through Dec 15
+  //   Wed  Easy (a.m.)
+  //   Thu  Easy 4 — late treadmill
+  //   Fri  LONG RUN — easy long runs alternate with MP-block long runs
+  //   Sat  No running (kids) · Upper A
+  //   Sun  MP reps on the treadmill — or easy when Friday carried MP
+  //
+  // Intensities (max HR 200):
+  //   Easy   9:30–10:00/mi · HR <150 — the added volume lives here
+  //   Long   9:00–9:30/mi · HR ≤168
+  //   Sub-T  ~7:40–7:55/mi · HR ≤175 by rep's end — could always do one more rep
+  //   MP     7:45–7:50/mi · HR ≤175
+  // No VO2 sessions, time trials, progressions or hard finishes.
+  // When a week breaks: drop Thu, then Wed. Never make up miles; never trade the long run.
+  // ============================================================================
+  // W11 · 7 wtg (Nov 16–22) — 48 · six run days
+  ["2026-11-16", "run", "Easy Run", "5mi · easy", "5 mi easy (9:30–10:00/mi · HR <150). Evening works."],
+  ["2026-11-17", "run", "Sub-T Singles + Lower", "9mi · 4×10′ sub-T", "2 mi WU, 4×10:00 @ sub-T (~7:45–7:55/mi · HR ≤175 by rep's end) w/90s jog, CD easy to 9 total. Finish feeling like you had one more rep in you. PM Lower — light, RIR 3.", "lower"],
+  ["2026-11-18", "run", "Easy Run", "6mi · easy", "6 mi easy (9:30–10:00/mi · HR <150)."],
+  ["2026-11-19", "run", "Easy Run", "4mi · easy", "4 mi easy (9:30–10:00/mi · HR <150) — late treadmill. First run to drop if the week breaks."],
+  ["2026-11-20", "run", "Long Run", "16mi · long", "16 mi long run (9:00–9:30/mi · HR ≤168 the whole way). Gel every 30–35 min. No fast finish."],
+  ["2026-11-21", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance (RIR 2–3).", "upperA"],
+  ["2026-11-22", "run", "MP Reps", "8mi · 3×2mi @ MP", "1 mi WU, 3×2 mi @ MP (7:45–7:50/mi · HR ≤175) w/2:00 easy jog, CD to 8 total. Treadmill, fan on high."],
+  // W12 · 6 wtg (Nov 23–29) — 50 · first MP long run
+  ["2026-11-23", "run", "Easy + Strides", "7mi · easy + 6×100", "7 mi easy (9:30–10:00/mi · HR <150) + 6×100 m strides, full recovery between."],
+  ["2026-11-24", "run", "Sub-T Singles + Lower", "9mi · 3×15′ sub-T", "2 mi WU, 3×15:00 @ sub-T (~7:45–7:55/mi · HR ≤175 by rep's end) w/2:00 jog, CD easy to 9 total. PM Lower — light, RIR 3.", "lower"],
+  ["2026-11-25", "run", "Easy Run", "6mi · easy", "6 mi easy (9:30–10:00/mi · HR <150)."],
+  ["2026-11-26", "run", "Easy Run", "4mi · easy", "Thanksgiving. 4 mi easy (HR <150) — late treadmill. Skip without guilt if the day doesn't allow."],
+  ["2026-11-27", "run", "MP Long Run", "18mi · last 6 @ MP", "18 mi: 12 easy (9:00–9:30/mi · HR ≤168), then last 6 @ MP (7:45–7:50/mi · HR ≤175). Gel every 30–35 min. Early start before the house wakes."],
+  ["2026-11-28", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance (RIR 2–3).", "upperA"],
+  ["2026-11-29", "run", "Easy Run", "6mi · easy", "6 mi easy (9:30–10:00/mi · HR <150) — stroller or treadmill."],
+  // W13 · 5 wtg (Nov 30–Dec 6) — 53 · 20-miler
+  ["2026-11-30", "run", "Easy + Strides", "6mi · easy + 6×100", "6 mi easy (9:30–10:00/mi · HR <150) + 6×100 m strides."],
+  ["2026-12-01", "run", "Sub-T Singles + Lower", "9mi · 4×10′ sub-T", "2 mi WU, 4×10:00 @ sub-T (~7:40–7:55/mi · HR ≤175 by rep's end) w/90s jog, CD easy to 9 total. PM Lower — light, RIR 3.", "lower"],
+  ["2026-12-02", "run", "Easy Run", "6mi · easy", "6 mi easy (9:30–10:00/mi · HR <150)."],
+  ["2026-12-03", "run", "Easy Run", "4mi · easy", "4 mi easy (HR <150) — late treadmill."],
+  ["2026-12-04", "run", "Long Run", "20mi · long", "20 mi long run (9:00–9:30/mi · HR ≤168). Fuel every 30–35 min; treat the kit and breakfast as race rehearsal. No fast finish."],
+  ["2026-12-05", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance (RIR 2–3).", "upperA"],
+  ["2026-12-06", "run", "MP Reps", "8mi · 2×3mi @ MP", "1 mi WU, 2×3 mi @ MP (7:45–7:50/mi · HR ≤175) w/3:00 easy jog, CD to 8 total. Treadmill, fan on high."],
+  // W14 · 4 wtg (Dec 7–13) — 50 · MP test
+  ["2026-12-07", "run", "Easy + Strides", "7mi · easy + 6×100", "7 mi easy (9:30–10:00/mi · HR <150) + 6×100 m strides."],
+  ["2026-12-08", "run", "Sub-T Singles", "9mi · 3×15′ sub-T", "2 mi WU, 3×15:00 @ sub-T (~7:40–7:55/mi · HR ≤175 by rep's end) w/2:00 jog, CD easy to 9 total. No Lower this week."],
+  ["2026-12-09", "run", "Easy Run", "6mi · easy", "6 mi easy (9:30–10:00/mi · HR <150)."],
+  ["2026-12-10", "run", "Easy Run", "4mi · easy", "4 mi easy (HR <150) — late treadmill."],
+  ["2026-12-11", "run", "MP Long Run", "17mi · 12 @ MP", "17 mi: 3 easy, 12 @ MP (7:45–7:50/mi), 2 easy. Outdoors, 5 a.m. start, full race kit + fueling. THE decider: HR ≤175 through all 12 → race at 7:45–7:50. HR at 180 by mile 6 → race at 8:00."],
+  ["2026-12-12", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance (RIR 2–3).", "upperA"],
+  ["2026-12-13", "run", "Easy Run", "7mi · easy", "7 mi easy (9:30–10:00/mi · HR <150) — stroller or treadmill."],
+  // W15 · 3 wtg (Dec 14–20) — 54 · PEAK · last 20-miler
+  ["2026-12-14", "run", "Easy + Strides", "7mi · easy + 6×100", "7 mi easy (9:30–10:00/mi · HR <150) + 6×100 m strides."],
+  ["2026-12-15", "run", "Sub-T Singles + Lower", "10mi · 5×10′ sub-T", "2 mi WU, 5×10:00 @ sub-T (~7:40–7:55/mi · HR ≤175 by rep's end) w/90s jog, CD easy to 10 total. Biggest threshold session of the block. PM: LAST Lower session — light, RIR 3. Upper-only from here.", "lower"],
+  ["2026-12-16", "run", "Easy Run", "6mi · easy", "6 mi easy (9:30–10:00/mi · HR <150)."],
+  ["2026-12-17", "run", "Easy Run", "4mi · easy", "4 mi easy (HR <150) — late treadmill."],
+  ["2026-12-18", "run", "Long Run", "20mi · long", "LAST 20-MILER (9:00–9:30/mi · HR ≤168). 5 a.m. start — full Disney rehearsal: kit, breakfast timing, fueling."],
+  ["2026-12-19", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A, maintenance (RIR 2–3).", "upperA"],
+  ["2026-12-20", "run", "Easy Run", "7mi · easy", "7 mi easy (9:30–10:00/mi · HR <150) — stroller or treadmill."],
+  // W16 · 2 wtg (Dec 21–27) — 44 · taper begins · Christmas is Friday, so the long run goes Wednesday
+  ["2026-12-21", "run", "Easy + Strides", "6mi · easy + 6×100", "6 mi easy (9:30–10:00/mi · HR <150) + 6×100 m strides."],
+  ["2026-12-22", "run", "Easy Run", "6mi · easy", "6 mi easy (9:30–10:00/mi · HR <150)."],
+  ["2026-12-23", "run", "MP Long Run", "14mi · 8 @ MP", "14 mi: 4 easy, 8 @ MP (race pace from Dec 11 · HR ≤175), 2 easy. Last long effort before Disney."],
+  ["2026-12-24", "run", "Easy Run", "4mi · easy", "Christmas Eve. 4 mi easy (HR <150) — late treadmill, or skip."],
+  ["2026-12-25", "run", "Easy Run", "6mi · easy", "Christmas. 6 mi easy (HR <150) — short and early."],
+  ["2026-12-26", "lift", "Upper A", "Upper A · strength", "Rest from running. Upper A — taper: drop 1 set per lift.", "upperA"],
+  ["2026-12-27", "run", "Sub-T Singles", "8mi · 3×10′ sub-T", "2 mi WU, 3×10:00 @ sub-T (~7:40–7:55/mi · HR ≤175 by rep's end) w/90s jog, CD easy to 8 total. Treadmill, fan on high."],
+  // W17 · 1 wtg (Dec 28–Jan 3) — 32 · taper
+  ["2026-12-28", "run", "Easy Run", "5mi · easy", "5 mi easy (9:30–10:00/mi · HR <150)."],
+  ["2026-12-29", "run", "Sub-T Singles", "7mi · 3×8′ sub-T", "2 mi WU, 3×8:00 @ sub-T (~7:40–7:55/mi · HR ≤175) w/90s jog, CD easy to 7 total. Last real workout — smooth, not hard."],
+  ["2026-12-30", "run", "Easy + Strides", "5mi · easy + 6×100", "5 mi easy (HR <150) + 6×100 m strides."],
   ["2026-12-31", "lift", "Upper A", "Upper A · light", "Rest from running. Upper A — light (RIR 3–4), drop 1 set per lift. No lower body from here to the race.", "upperA"],
-  ["2027-01-01", "run", "Med-Long Run", "12mi · MLR", "New Year's Day. 12 mi medium-long (8:40–9:20/mi · HR 150–168). Easy effort — fitness is banked."],
-  ["2027-01-03", "run", "Recovery", "4mi · recovery", "4 mi recovery (~10:00/mi · HR <152) — stroller or treadmill."],
-  // W18 · RACE WEEK (Jan 4–10) — 22 + race
-  ["2027-01-05", "run", "Recovery + Upper A", "6mi · recovery", "6 mi recovery (~10:00/mi · HR <152). Last lift: Upper A very light (RIR 4), done by today — nothing after.", "upperA"],
-  ["2027-01-06", "run", "Dress Rehearsal", "7mi · 2 @ MP", "7 mi w/ 2 @ MP (goal pace · HR 164–176). Full race kit + shoes. 5 a.m. start if possible."],
-  ["2027-01-08", "run", "Recovery + Strides", "5mi · rec + 6×100", "5 mi recovery (HR <152) + 6×100 m strides. Travel/expo day logistics — stay off your feet otherwise."],
-  ["2027-01-09", "run", "Recovery", "4mi · recovery", "4 mi shakeout (~10:00/mi). NO parks today — save the legs. Early dinner, ~8 p.m. lights out for the ~3 a.m. wake-up."],
-  ["2027-01-10", "race", "RACE: Disney Marathon", "26.2mi · GOAL MARATHON", "Disney World Marathon, ~5:00 a.m. start. Goal ~7:25/mi (3:14:xx) if Dec confirmed it; HR discipline: ≤176 (88%) through mile 20, then race. First 3 mi 10–15s slow on purpose. Fuel from mile 4, every 30–35 min."],
+  ["2027-01-01", "run", "MP Long Run", "11mi · 3 @ MP", "New Year's Day. 11 mi: 6 easy, 3 @ MP (race pace · HR ≤175), 2 easy. Fitness is banked."],
+  ["2027-01-03", "run", "Easy Run", "4mi · easy", "4 mi easy (HR <150) — stroller or treadmill."],
+  // W18 · RACE WEEK (Jan 4–10) — 20 + race
+  ["2027-01-04", "run", "Easy Run", "4mi · easy", "4 mi easy (9:30–10:00/mi · HR <150)."],
+  ["2027-01-05", "run", "Easy + Upper A", "5mi · easy", "5 mi easy (HR <150). Last lift: Upper A very light (RIR 4), done by today — nothing after.", "upperA"],
+  ["2027-01-06", "run", "Dress Rehearsal", "6mi · 2 @ MP", "6 mi w/ 2 @ MP (race pace · HR ≤175). Full race kit + shoes. 5 a.m. start if possible."],
+  ["2027-01-08", "run", "Shakeout + Strides", "3mi · easy + 4×100", "3 mi easy + 4×100 m strides. Travel/expo day logistics — stay off your feet otherwise."],
+  ["2027-01-09", "run", "Shakeout", "2mi · shakeout", "2 mi shakeout (~10:00/mi). NO parks today — save the legs. Early dinner, ~8 p.m. lights out for the ~3 a.m. wake-up."],
+  ["2027-01-10", "race", "RACE: Disney Marathon", "26.2mi · GOAL MARATHON", "Disney World Marathon, ~5:00 a.m. start. A goal 7:45–7:50/mi (3:23–3:25) if Dec 11 confirmed it; otherwise 8:00/mi (3:30). First 3 mi 10–15s slow on purpose. HR discipline: ≤176 (88%) through mile 20, then race. Fuel from mile 4, every 30–35 min."],
 ];
 
 const workoutMap = new Map<string, Workout>();
